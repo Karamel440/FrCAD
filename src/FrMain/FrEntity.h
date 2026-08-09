@@ -12,8 +12,8 @@ class FrLayer {
 	friend class FrEntity;
 
 public:
-	bool isReference() const;
 	std::wstring name() const;
+	bool isReference() const;
 	void off() const;
 	void on() const;
 	void freeze() const;
