@@ -1,0 +1,148 @@
+#pragma once
+#include <aced.h>
+#include <stdexcept>
+#include <filesystem>
+#include <optional>
+#include <dbobjptr2.h>
+#include <dbapserv.h>
+
+#include "FrEntity.h"
+#include "FrExceptions.h"
+
+class FrOpenScope {
+
+	AcDbSmartObjectPointer<AcDbEntity> object_;
+public:
+
+	FrOpenScope(
+		AcDbObjectId id,
+		AcDb::OpenMode mode)
+		: object_(id, mode)
+	{
+		const Acad::ErrorStatus status =
+			object_.openStatus();
+
+		if (status != Acad::eOk) {
+			throw FrException{ 
+				L"Ошибка при открытии объекта в наборе открытия",
+				status };
+			
+		}
+	}
+
+	FrOpenScope(const FrOpenScope&) = delete;
+	FrOpenScope& operator=(const FrOpenScope&) = delete;
+
+	~FrOpenScope() = default;
+
+};
+
+class FrRefDatabase {
+	
+protected:
+	AcDbDatabase* db_;
+
+public:
+	FrRefDatabase() = delete;
+
+	explicit FrRefDatabase(AcDbDatabase* db) : db_(db) {
+		if (!db_)
+			throw FrException {
+			L"Ошибка конструктора FrRefDatabase"
+		};
+	}
+
+	void append(FrEntity& ent);
+
+	FrOpenScope open(FrEntity& entity, AcDb::OpenMode mode);
+
+	void saveAs(const std::filesystem::path& path);
+
+	std::optional<FrLayer> layer(const std::wstring& layerName);
+
+	std::vector<FrLayer> layers() const;
+
+	FrLayer createLayer (const std::wstring& layerName);
+
+	template <typename T>
+	std::vector<T> entities() const {
+		AcDbObjectPointer<AcDbBlockTableRecord> space{
+	db_->currentSpaceId(),
+	AcDb::kForRead
+		};
+
+		AcDbBlockTableRecordIterator* rawIter = nullptr;
+
+		const Acad::ErrorStatus es =
+			space->newIterator(rawIter);
+
+		std::unique_ptr<AcDbBlockTableRecordIterator> iter{
+			rawIter
+		};
+
+		FrCheckStatus(
+			es,
+			L"Не удалось создать итератор"
+		);
+
+		std::vector<T> result;
+
+		for (; !iter->done(); iter->step()) {
+			AcDbObjectId id;
+
+			using NativeType = typename T::NativeType;
+
+
+
+			const auto es = iter->getEntityId(id);
+			if (es != Acad::eOk)
+				continue;
+
+			AcRxClass* objectClass = id.objectClass();
+
+			if (!objectClass ||
+				objectClass != NativeType::desc())
+			{
+				continue;
+			}
+
+
+
+			result.emplace_back(T{ id });
+		}
+		return result;
+	}
+};
+
+class FrDatabase : public FrRefDatabase {
+public:
+	~FrDatabase() {
+		delete db_;
+	}
+
+	FrDatabase(const FrDatabase&) = delete;
+	FrDatabase& operator=(const FrDatabase&) = delete;
+
+	FrDatabase(FrDatabase&& other) noexcept
+		: FrRefDatabase(other.db_) {
+		other.db_ = nullptr;
+	}
+
+	FrDatabase& operator=(FrDatabase&& other) noexcept {
+		if (this != &other) {
+			delete db_;
+
+			db_ = other.db_;
+			other.db_ = nullptr;
+		}
+		return *this;
+	}
+
+	void read(std::filesystem::path& path);
+};
+
+inline FrRefDatabase FrDbCurrent() {
+	return FrRefDatabase{
+		acdbHostApplicationServices()->workingDatabase()
+	};
+}
