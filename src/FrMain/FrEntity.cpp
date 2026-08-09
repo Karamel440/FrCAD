@@ -118,9 +118,7 @@ bool FrLayer::isReference() const {
 		L"Не удалось открыть слой"
 	);
 
-	const auto str = name().find('|');
-	
-	return str != std::string::npos;	
+	return layer->isDependent();
 }
 
 std::wstring FrLayer::name() const {
