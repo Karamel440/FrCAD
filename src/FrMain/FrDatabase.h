@@ -24,10 +24,6 @@ public:
 		};
 	}
 
-	void append(FrEntity& ent);
-
-	void saveAs(const std::filesystem::path& path);
-
 	std::optional<FrLayer> layer(const std::wstring& layerName);
 
 	std::vector<FrLayer> layers() const;
@@ -89,6 +85,10 @@ public:
 		}
 		return result;
 	}
+
+	void append(FrEntity& ent);
+
+	void saveAs(const std::filesystem::path& path);
 };
 
 class FrDatabase : public FrRefDatabase {

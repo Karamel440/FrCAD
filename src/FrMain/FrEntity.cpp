@@ -2,6 +2,8 @@
 #include "FrExceptions.h"
 #include <dbobjptr2.h>
 
+FrEntity::~FrEntity() = default;
+
 void FrEntity::setLayer(const FrLayer& layer)
 {
 	if (ent_) {
@@ -87,21 +89,21 @@ void FrEntity::setLineWeight(AcDb::LineWeight weight) {
 	);
 }
 
-FrEntity::~FrEntity() = default;
+std::wstring FrLayer::name() const {
+	if (id_ == AcDbObjectId::kNull)
+		throw FrException{ L"Некорректный слой" };
 
-void FrLayer::off() const {
 	AcDbObjectPointer<AcDbLayerTableRecord> layer{
 		id_,
-		AcDb::kForWrite
+		AcDb::kForRead
 	};
-
 
 	FrCheckStatus(
 		layer.openStatus(),
 		L"Не удалось открыть слой"
 	);
 
-	layer->setIsOff(true);
+	return layer->name().kwszPtr();
 }
 
 bool FrLayer::isReference() const {
@@ -121,21 +123,19 @@ bool FrLayer::isReference() const {
 	return layer->isDependent();
 }
 
-std::wstring FrLayer::name() const {
-	if (id_ == AcDbObjectId::kNull)
-		throw FrException{ L"Некорректный слой" };
-
+void FrLayer::off() const {
 	AcDbObjectPointer<AcDbLayerTableRecord> layer{
 		id_,
-		AcDb::kForRead
+		AcDb::kForWrite
 	};
+
 
 	FrCheckStatus(
 		layer.openStatus(),
 		L"Не удалось открыть слой"
 	);
 
-	return layer->name().kwszPtr();
+	layer->setIsOff(true);
 }
 
 void FrLayer::on() const {
