@@ -11,6 +11,7 @@ void FrEntity::setLayer(const FrLayer& layer)
 			throw FrException{ L"Произошла ошибка при настройке слоя" };
 		return;
 	}
+
 	if (!id_.isNull()) {
 		AcDbSmartObjectPointer<AcDbEntity> ent{
 			id_,
@@ -94,12 +95,49 @@ void FrLayer::off() const {
 		AcDb::kForWrite
 	};
 
+
 	FrCheckStatus(
 		layer.openStatus(),
 		L"Не удалось открыть слой"
 	);
 
 	layer->setIsOff(true);
+}
+
+bool FrLayer::isReference() const {
+	if (id_ == AcDbObjectId::kNull)
+		throw FrException{ L"Некорректный слой" };
+
+	AcDbObjectPointer<AcDbLayerTableRecord> layer{
+		id_,
+		AcDb::kForRead
+	};
+
+	FrCheckStatus(
+		layer.openStatus(),
+		L"Не удалось открыть слой"
+	);
+
+	const auto str = name().find('|');
+	
+	return str != std::string::npos;	
+}
+
+std::wstring FrLayer::name() const {
+	if (id_ == AcDbObjectId::kNull)
+		throw FrException{ L"Некорректный слой" };
+
+	AcDbObjectPointer<AcDbLayerTableRecord> layer{
+		id_,
+		AcDb::kForRead
+	};
+
+	FrCheckStatus(
+		layer.openStatus(),
+		L"Не удалось открыть слой"
+	);
+
+	return layer->name().kwszPtr();
 }
 
 void FrLayer::on() const {
