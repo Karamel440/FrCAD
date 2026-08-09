@@ -35,19 +35,6 @@ void FrRefDatabase::append(FrEntity& ent) {
 		entity->close();
 }
 
-FrOpenScope FrRefDatabase::open(FrEntity& entity, AcDb::OpenMode mode) {
-	if (entity.id_ == AcDbObjectId::kNull)
-		throw FrException{
-		L"Объект не добавлен в базу данных"
-	};
-
-	if (entity.id_.database() != db_)
-		throw FrException{
-		L"Объект принадлежит другой базе данных"
-	};
-	return FrOpenScope{ entity.id_,mode };
-}
-
 std::optional<FrLayer> FrRefDatabase::layer(const std::wstring& layerName) {
 	AcDbObjectPointer<AcDbLayerTable> lt{
 		db_->layerTableId(),

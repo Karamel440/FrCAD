@@ -9,34 +9,6 @@
 #include "FrEntity.h"
 #include "FrExceptions.h"
 
-class FrOpenScope {
-
-	AcDbSmartObjectPointer<AcDbEntity> object_;
-public:
-
-	FrOpenScope(
-		AcDbObjectId id,
-		AcDb::OpenMode mode)
-		: object_(id, mode)
-	{
-		const Acad::ErrorStatus status =
-			object_.openStatus();
-
-		if (status != Acad::eOk) {
-			throw FrException{ 
-				L"Ошибка при открытии объекта в наборе открытия",
-				status };
-			
-		}
-	}
-
-	FrOpenScope(const FrOpenScope&) = delete;
-	FrOpenScope& operator=(const FrOpenScope&) = delete;
-
-	~FrOpenScope() = default;
-
-};
-
 class FrRefDatabase {
 	
 protected:
@@ -54,8 +26,6 @@ public:
 
 	void append(FrEntity& ent);
 
-	FrOpenScope open(FrEntity& entity, AcDb::OpenMode mode);
-
 	void saveAs(const std::filesystem::path& path);
 
 	std::optional<FrLayer> layer(const std::wstring& layerName);
@@ -70,6 +40,13 @@ public:
 	db_->currentSpaceId(),
 	AcDb::kForRead
 		};
+		const Acad::ErrorStatus es =
+			space.openStatus();
+
+			FrCheckStatus(
+				es,
+				L"Не удалось открыть ms"
+			);
 
 		AcDbBlockTableRecordIterator* rawIter = nullptr;
 
