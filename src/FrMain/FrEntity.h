@@ -16,7 +16,7 @@ public:
 	std::wstring name() const;
 	void off() const;
 	void on() const;
-	void freese () const;
+	void freeze() const;
 	void unfreeze() const;
 	void erase() const;
 };

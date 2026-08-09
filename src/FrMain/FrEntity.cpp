@@ -19,7 +19,7 @@ void FrEntity::setLayer(const FrLayer& layer)
 		};
 
 		Acad::ErrorStatus es = ent.openStatus();
-		if(es != Acad::eOk)
+		if (es != Acad::eOk)
 			throw FrException{ L"Произошла ошибка при настройке слоя по id" };
 
 		es = ent->setLayer(layer.id_);
@@ -53,7 +53,7 @@ void FrEntity::setColor(int index) {
 		);
 		return;
 	}
-	
+
 	FrCheckStatus(
 		ent_->setColorIndex(index),
 		L"Не удалось установить цвет"
@@ -150,4 +150,32 @@ void FrLayer::on() const {
 	);
 
 	layer->setIsOff(false);
+}
+
+void FrLayer::freeze() const {
+	AcDbObjectPointer<AcDbLayerTableRecord> layer{
+		id_,
+		AcDb::kForWrite
+	};
+
+	FrCheckStatus(
+		layer.openStatus(),
+		L"Не удалось открыть слой"
+	);
+
+	layer->setIsFrozen(true);
+}
+
+void FrLayer::unfreeze() const {
+	AcDbObjectPointer<AcDbLayerTableRecord> layer{
+		id_,
+		AcDb::kForWrite
+	};
+
+	FrCheckStatus(
+		layer.openStatus(),
+		L"Не удалось открыть слой"
+	);
+
+	layer->setIsFrozen(false);
 }
