@@ -26,7 +26,7 @@ AcGePoint3d FrGetPoint(
 
 AcGePoint3d FrGetPoint(
     AcGePoint3d firstPoint,
-    const std::wstring& message ) {
+    const std::wstring& message) {
     ads_point pt;
     ads_point point{
         firstPoint.x,

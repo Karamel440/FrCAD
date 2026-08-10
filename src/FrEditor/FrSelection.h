@@ -38,7 +38,7 @@
 
 template <typename T = FrEntity>
 requires std::derived_from<T,FrEntity>
-std::vector<T> select() {
+std::vector<T> FrSelect() {
 
     std::vector<T> result;
 
