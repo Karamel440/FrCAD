@@ -25,10 +25,13 @@ class FrEntity {
 	AcDbObjectId id_  = AcDbObjectId::kNull;
 	std::unique_ptr<AcDbEntity> ent_;
 
+	using NativeType = AcDbEntity;
+
+
 	friend class FrRefDatabase;
 
 protected:
-	virtual ~FrEntity();
+	
 	explicit FrEntity(std::unique_ptr<AcDbEntity> entity) : ent_(std::move(entity)) {}
 	explicit FrEntity(AcDbObjectId id) : id_(id) {}
 
@@ -41,6 +44,13 @@ protected:
 	}
 
 public:
+	virtual ~FrEntity();
+
+	FrEntity(const FrEntity&) = delete;
+	FrEntity& operator=(const FrEntity&) = delete;
+
+	FrEntity(FrEntity&&) noexcept = default;
+	FrEntity& operator=(FrEntity&&) noexcept = default;
 
 	void setLayer(const FrLayer& layer);
 	void setColor(int index);

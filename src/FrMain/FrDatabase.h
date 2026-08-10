@@ -10,7 +10,6 @@
 #include "FrExceptions.h"
 
 class FrRefDatabase {
-	
 protected:
 	AcDbDatabase* db_;
 
@@ -46,7 +45,7 @@ public:
 
 		AcDbBlockTableRecordIterator* rawIter = nullptr;
 
-		const Acad::ErrorStatus es =
+		Acad::ErrorStatus es =
 			space->newIterator(rawIter);
 
 		std::unique_ptr<AcDbBlockTableRecordIterator> iter{
@@ -65,16 +64,15 @@ public:
 
 			using NativeType = typename T::NativeType;
 
+			es = iter->getEntityId(id);
 
-
-			const auto es = iter->getEntityId(id);
 			if (es != Acad::eOk)
 				continue;
 
 			AcRxClass* objectClass = id.objectClass();
 
 			if (!objectClass ||
-				objectClass != NativeType::desc())
+				!objectClass->isDerivedFrom(NativeType::desc()))
 			{
 				continue;
 			}
