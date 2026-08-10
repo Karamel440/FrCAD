@@ -98,6 +98,7 @@ void FrEntity::setLinetype(const std::wstring& name) {
 			ent_->setLinetype(name.c_str()),
 			L"Не удалось установить тип линии"
 		);
+		return;
 	}
 
 	AcDbObjectPointer<AcDbEntity> entity{
@@ -131,6 +132,24 @@ std::wstring FrLayer::name() const {
 	);
 
 	return layer->name().kwszPtr();
+}
+
+FrLayer FrEntity::layer() const {
+	if (ent_) {
+		return FrLayer{ ent_->layerId() };
+	}
+
+	AcDbObjectPointer<AcDbEntity> entity{
+		id_,
+		AcDb::kForRead
+	};
+
+	FrCheckStatus(
+		entity.openStatus(),
+		L"Не удалось открыть сущность"
+	);
+
+	return FrLayer{ entity->layerId() };
 }
 
 bool FrLayer::isReference() const {
