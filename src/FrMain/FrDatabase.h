@@ -68,17 +68,17 @@ public:
 			if (es != Acad::eOk)
 				continue;
 
-			AcRxClass* objectClass = id.objectClass();
-
-			if (!objectClass ||
-				!objectClass->isDerivedFrom(NativeType::desc()))
-			{
+			if (id.isNull()) {
 				continue;
 			}
 
+			FrObject obj{ id };
 
+			if (!obj.is<T>()) {
+				continue;
+			}
 
-			result.emplace_back(T{ id });
+			result.push_back(obj.as<T>());
 		}
 		return result;
 	}

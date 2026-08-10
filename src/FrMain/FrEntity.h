@@ -36,7 +36,7 @@ public:
 	template<typename T>
 		requires std::derived_from<T, FrObject>
 	T as() const {
-		if (!is<T>())
+		if (is.isNull() || !is<T>())
 			throw FrException{
 				L"Невозможно преобразовать объект к текущему типу"
 		};
