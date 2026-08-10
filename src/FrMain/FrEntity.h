@@ -36,7 +36,7 @@ public:
 		requires std::derived_from<T, FrObject>
 	T as() const {
 		if (!is<T>()) {
-			trow FrException{
+			throw FrException{
 				L"Невозможно преобразовать объект к текущему типу"
 			};
 		}
