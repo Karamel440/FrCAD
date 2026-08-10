@@ -3,6 +3,34 @@
 #include <aced.h>
 #include <dbents.h>
 
+class FrObject {
+protected:
+	AcDbObjectId id_ = AcDbObjectId::kNull;
+
+public:
+	using NativeType = AcDbObject;
+
+	virtual ~FrObject() = default;
+
+	FrObject() = default;
+
+	explicit FrObject(AcDbObjectId id)
+		: id_(id) {
+	}
+
+	template<typename T>
+		requires std::derived_from<T, FrObject>
+	bool is() const {
+		if (id_ != AcDbObjectId::kNull) {
+			AcRxClass* objectClass = id_.objectClass();
+
+			return objectClass &&
+				objectClass->isDerivedFrom(T::NativeType::desc());
+		}
+
+		return dynamic_cast<const T*>(this) != nullptr;
+	}
+};
 
 class FrLayer {
 	AcDbObjectId id_;
@@ -21,19 +49,18 @@ public:
 	void erase() const;
 };
 
-class FrEntity {
-	AcDbObjectId id_  = AcDbObjectId::kNull;
+class FrEntity : public FrObject {
+	
 	std::unique_ptr<AcDbEntity> ent_;
-
-	using NativeType = AcDbEntity;
-
 
 	friend class FrRefDatabase;
 
 protected:
 	
 	explicit FrEntity(std::unique_ptr<AcDbEntity> entity) : ent_(std::move(entity)) {}
-	explicit FrEntity(AcDbObjectId id) : id_(id) {}
+	explicit FrEntity(AcDbObjectId id) : FrObject(id) {}
+
+	using NativeType = AcDbEntity;
 
 	AcDbEntity* entity() noexcept {
 		return ent_.get();
@@ -60,4 +87,3 @@ public:
 	int color() const;
 	AcDb::LineWeight lineWeight() const;
 };
-
