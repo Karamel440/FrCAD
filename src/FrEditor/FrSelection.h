@@ -53,13 +53,12 @@ std::vector<T> select() {
 
     if (status == RTCAN)
     {
-        acedSSFree(ss);
         throw FrCancel{};
     }
     
-    if(status != RTNORM)
-        acedSSFree(ss);
+    if (status != RTNORM) {
         return {};
+    }
 
     int length = 0;
     if (acedSSLength(ss, &length) != RTNORM) {
@@ -83,7 +82,7 @@ std::vector<T> select() {
         if (!obj.is<T>())
             continue;
 
-        result.emplace_back(obj.as<T>);
+        result.emplace_back(obj.as<T>());
     }
     acedSSFree(ss);
     return result;

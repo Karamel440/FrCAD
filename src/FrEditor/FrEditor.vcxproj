@@ -21,6 +21,9 @@
   <ItemGroup>
     <ClInclude Include="FrSelection.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="FrSelection.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -75,7 +78,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>D:\Macro\Auto\objectARX 2026\inc;D:\Macro\Fr\src\FrMain</IncludePath>
+    <IncludePath>D:\Macro\Auto\objectARX 2026\inc;D:\Macro\Fr\src\FrMain;D:\Macro\Fr\src\FrEditor</IncludePath>
     <LibraryPath>D:\Macro\Auto\objectARX 2026\lib-x64;$(WindowsSDK_LibraryPath_x64);$(VC_LibraryPath_x64);D:\Macro\Fr\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
