@@ -87,3 +87,12 @@ std::vector<T> select() {
     acedSSFree(ss);
     return result;
 }
+
+AcGePoint3d FrGetPoint(
+   const std::wstring& message = L"Выберете первую точку"
+);
+
+AcGePoint3d FrGetPoint(
+    AcGePoint3d firstPoint,
+    const std::wstring& message = L"Выберете первую точку"
+);
