@@ -96,8 +96,10 @@ public:
 	void setLayer(const FrLayer& layer);
 	void setColor(int index);
 	void setLineWeight(AcDb::LineWeight weight);
+	void setLinetype(const std::wstring& name);
 
 	FrLayer layer() const;
 	int color() const;
 	AcDb::LineWeight lineWeight() const;
+	std::wstring& Linetype() const;
 };

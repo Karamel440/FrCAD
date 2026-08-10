@@ -89,6 +89,33 @@ void FrEntity::setLineWeight(AcDb::LineWeight weight) {
 	);
 }
 
+void FrEntity::setLinetype(const std::wstring& name) {
+	if (!ent_ && id_ == AcDbObjectId::kNull)
+		throw FrException{ L"Пустой объект" };
+	
+	if (ent_) {
+		FrCheckStatus(
+			ent_->setLinetype(name.c_str()),
+			L"Не удалось установить тип линии"
+		);
+	}
+
+	AcDbObjectPointer<AcDbEntity> entity{
+		id_,
+		AcDb::kForWrite
+	};
+
+	FrCheckStatus(
+		entity.openStatus(),
+		L"Не удалось открыть сущность"
+	);
+
+	FrCheckStatus(
+		entity->setLinetype(name.c_str()),
+		L"Не удалось установить тип линии"
+	);
+}
+
 std::wstring FrLayer::name() const {
 	if (id_ == AcDbObjectId::kNull)
 		throw FrException{ L"Некорректный слой" };

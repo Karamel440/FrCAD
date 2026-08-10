@@ -1,7 +1,7 @@
 #include <FrSelection.h>
 
 AcGePoint3d FrGetPoint(
-    const std::wstring& message = L"Выберите первую точку") {
+    const std::wstring& message) {
     ads_point pt;
 
     int status = acedGetPoint(
@@ -26,7 +26,7 @@ AcGePoint3d FrGetPoint(
 
 AcGePoint3d FrGetPoint(
     AcGePoint3d firstPoint,
-    const std::wstring& message = L"Выберете вторую точку") {
+    const std::wstring& message ) {
     ads_point pt;
     ads_point point{
         firstPoint.x,
