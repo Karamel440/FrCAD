@@ -43,23 +43,23 @@ std::vector<T> select() {
     std::vector<T> result;
 
     ads_name ss;
-    if (acedSSGet(
+    const int status = acedSSGet(
         nullptr,
         nullptr,
         nullptr,
         nullptr,
         ss
-    ) == RTCAN)
+    if (status == RTCAN)
     {
-        throw FrCancel;
+        throw FrCancel{};
     }
-    else
-        return FrSelectionSet<T>{};
+    elseif(status != RTNORM)
+        return {};
 
     int length = 0;
     if (acedSSLength(ss, &length) != RTNORM) {
         acedSSFree(ss);
-        return result;
+        return {};
     }
 
     for (int i{}; i < length; i++) {
@@ -83,4 +83,3 @@ std::vector<T> select() {
     acedSSFree(ss);
     return result;
 }
-

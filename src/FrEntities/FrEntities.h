@@ -5,13 +5,7 @@
 
 class FrPolyline : public FrEntity {
 	friend class FrRefDatabase;
-	template <typename T>
-	friend class FrSelectionSet;
-
-	template<typename T>
-	friend class FrSelectionSet;
-
-	
+	friend class FrObject;
 
 	FrPolyline(AcDbObjectId id)
 		:FrEntity{ id } {

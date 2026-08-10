@@ -21,9 +21,6 @@
   <ItemGroup>
     <ClInclude Include="FrSelection.h" />
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="FrEditor.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -139,7 +136,8 @@
       <ModuleDefinitionFile>D:\Macro\Auto\objectARX 2026\inc\AcRxDefault.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Y /F "$(TargetPath)" "D:\Macro\Auto\CAD\dev\arx"</Command>
+      <Command>copy /Y "$(TargetPath)" "D:\Macro\Fr\lib\"
+xcopy "$(ProjectDir)*.h" "D:\Macro\Fr\inc" /Y /I /D</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

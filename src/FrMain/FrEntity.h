@@ -16,6 +16,7 @@ public:
 
 	explicit FrObject(AcDbObjectId id)
 		: id_(id) {
+		
 	}
 
 	template<typename T>
@@ -29,6 +30,18 @@ public:
 		}
 
 		return dynamic_cast<const T*>(this) != nullptr;
+	}
+
+	template<typename T>
+		requires std::derived_from<T, FrObject>
+	T as() const {
+		if (!is<T>()) {
+			trow FrException{
+				L"Невозможно преобразовать объект к текущему типу"
+			};
+		}
+
+		return T{ id_ };
 	}
 };
 
@@ -54,13 +67,12 @@ class FrEntity : public FrObject {
 	std::unique_ptr<AcDbEntity> ent_;
 
 	friend class FrRefDatabase;
+	friend class FrObject;
 
 protected:
 	
 	explicit FrEntity(std::unique_ptr<AcDbEntity> entity) : ent_(std::move(entity)) {}
 	explicit FrEntity(AcDbObjectId id) : FrObject(id) {}
-
-	using NativeType = AcDbEntity;
 
 	AcDbEntity* entity() noexcept {
 		return ent_.get();
@@ -72,6 +84,8 @@ protected:
 
 public:
 	virtual ~FrEntity();
+
+	using NativeType = AcDbEntity;
 
 	FrEntity(const FrEntity&) = delete;
 	FrEntity& operator=(const FrEntity&) = delete;

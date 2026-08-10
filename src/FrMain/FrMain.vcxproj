@@ -84,8 +84,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>D:\Macro\Auto\objectARX 2026\inc;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Macro\Auto\objectARX 2026\lib-x64;$(WindowsSDK_LibraryPath_x64);$(VC_LibraryPath_x64);$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Macro\Auto\objectARX 2026\inc;D:\Macro\Fr\inc;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Macro\Auto\objectARX 2026\lib-x64;$(WindowsSDK_LibraryPath_x64);$(VC_LibraryPath_x64);D:\Macro\Fr\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetExt>

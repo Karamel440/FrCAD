@@ -11,6 +11,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FrEntities", "..\src\FrEnti
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FrEditor", "..\src\FrEditor\FrEditor.vcxproj", "{564B2037-1C8B-49E1-BB3A-EE1DFA735D2B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{17A127B6-AD5A-44A6-A962-C8F6D5B24488} = {17A127B6-AD5A-44A6-A962-C8F6D5B24488}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
