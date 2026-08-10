@@ -2,6 +2,7 @@
 #include <optional>
 #include <aced.h>
 #include <dbents.h>
+#include <FrExceptions.h>
 
 class FrObject {
 protected:
@@ -35,11 +36,10 @@ public:
 	template<typename T>
 		requires std::derived_from<T, FrObject>
 	T as() const {
-		if (!is<T>()) {
+		if (!is<T>())
 			throw FrException{
 				L"Невозможно преобразовать объект к текущему типу"
-			};
-		}
+		};
 
 		return T{ id_ };
 	}
