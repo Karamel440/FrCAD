@@ -35,7 +35,7 @@ public:
 	db_->currentSpaceId(),
 	AcDb::kForRead
 		};
-		const Acad::ErrorStatus es =
+		 Acad::ErrorStatus es =
 			space.openStatus();
 
 			FrCheckStatus(
@@ -45,8 +45,7 @@ public:
 
 		AcDbBlockTableRecordIterator* rawIter = nullptr;
 
-		Acad::ErrorStatus es =
-			space->newIterator(rawIter);
+		es = space->newIterator(rawIter);
 
 		std::unique_ptr<AcDbBlockTableRecordIterator> iter{
 			rawIter
