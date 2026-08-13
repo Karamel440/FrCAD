@@ -68,6 +68,7 @@ class FrEntity : public FrObject {
 
 	friend class FrRefDatabase;
 	friend class FrObject;
+	friend class FrModifier;
 
 protected:
 	
