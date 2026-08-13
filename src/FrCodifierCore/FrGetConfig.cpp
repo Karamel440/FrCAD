@@ -10,7 +10,7 @@ std::map<FrObjectCode, FrCodRule>;
 
 namespace fs = std::filesystem;
 
-const fs::path& FrCodifier::findJson() {
+fs::path FrCodifier::findJson() {
 
 }
 
@@ -43,7 +43,7 @@ FrRuleMap FrCodifier::loadConfig(
 			rainSewer.at("layer").get<std::string>(),
 			rainSewer.at("colorIndex").get<int>(),
 			rainSewer.at("lineWeight").get<double>(),
-			rainSewer.at("lineType").get<std::wstring>()
+			rainSewer.at("lineType").get<std::string>()
 		}
 	);
 

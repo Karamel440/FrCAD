@@ -6,8 +6,6 @@
 
 namespace fs = std::filesystem;
 
-std::wstring& toWstring(const std::string& string);
-
 enum class FrObjectCode {
 	rainSewer,
 	mainSewer,
@@ -44,7 +42,7 @@ class FrCodifier {
 		const fs::path& path
 	);
 
-	const fs::path& findJson();
+	fs::path findJson();
 
 public:
 	FrCodifier()
