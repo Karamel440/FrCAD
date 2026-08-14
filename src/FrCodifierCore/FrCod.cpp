@@ -27,7 +27,6 @@ std::wstring& toWstring(const std::string& string)
 	return result;
 }
 
-
 void FrModifier::apply(FrEntity& ent,FrObjectCode code)
 {
 	const auto& rule = cod_->getRule(code);
