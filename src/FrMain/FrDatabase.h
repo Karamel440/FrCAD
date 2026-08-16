@@ -5,9 +5,11 @@
 #include <optional>
 #include <dbobjptr2.h>
 #include <dbapserv.h>
+#include <vector>
 
 #include "FrEntity.h"
 #include "FrExceptions.h"
+#include "FrLayer.h"
 
 class FrRefDatabase {
 protected:

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\FrEntities\FrSpace.h" />
     <ClInclude Include="FrCommands.h" />
     <ClInclude Include="FrDatabase.h" />
     <ClInclude Include="FrEntity.h" />
@@ -29,6 +30,7 @@
     <ClInclude Include="FrString.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\FrEntities\FrSpace.cpp" />
     <ClCompile Include="FrDatabase.cpp" />
     <ClCompile Include="FrEntity.cpp" />
     <ClCompile Include="FrLayer.cpp" />

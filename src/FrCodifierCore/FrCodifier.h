@@ -1,6 +1,12 @@
 #pragma once
 #include <map>
+#include <filesystem>
 
+#include "FrFactory.h"
+#include "FrCodifierEnums.h"
+#include "FrCodRule.h"
+
+namespace fs = std::filesystem;
 
 class FrCodifier {
 
@@ -24,6 +30,6 @@ public:
 	}
 
 	FrFactory factory(FrRefDatabase& db) const;
-	const FrCodRule& getRule(FrObjectCode code);
+	const FrCodRule getRule(FrObjectCode code);
 
 };

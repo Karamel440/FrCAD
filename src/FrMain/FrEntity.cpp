@@ -1,6 +1,9 @@
 #include <string>
+#include <memory>
 
 #include <dbobjptr2.h>
+
+#include <FrLayer.h>
 
 #include "FrEntity.h"
 #include "FrExceptions.h"

@@ -1,6 +1,11 @@
 #pragma once
 #include <FrDatabase.h>
 #include <FrEntity.h>
+#include <FrPolyline.h>
+
+#include "FrCodRule.h"
+#include "FrCodifier.h"
+#include "FrCodifierEnums.h"
 
 class FrFactory {
     friend class FrCodifier;

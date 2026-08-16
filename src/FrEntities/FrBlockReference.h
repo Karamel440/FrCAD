@@ -19,6 +19,6 @@ public:
 	void setPosition(AcGePoint3d point);
 
 	AcGePoint3d position() const;
-	FrSpace& space() const;
+	FrSpace space() const;
 
 };

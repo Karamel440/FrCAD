@@ -4,6 +4,9 @@
 #include <dbents.h>
 #include <FrExceptions.h>
 
+#include "FrObject.h"
+#include "FrLayer.h"
+
 class FrEntity : public FrObject {
 	
 	std::unique_ptr<AcDbEntity> ent_;

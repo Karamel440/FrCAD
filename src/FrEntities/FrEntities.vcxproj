@@ -21,12 +21,10 @@
   <ItemGroup>
     <ClInclude Include="FrBlockReference.h" />
     <ClInclude Include="FrPolyline.h" />
-    <ClInclude Include="FrSpace.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FrBlockReference.cpp" />
     <ClCompile Include="FrPolyline.cpp" />
-    <ClCompile Include="FrSpace.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

@@ -1,7 +1,9 @@
 #include <string>
 #include <fstream>
+#include <filesystem>
 
 #include <json.hpp>
+#include <magic_enum.hpp>
 
 #include <FrExceptions.h>
 
@@ -10,6 +12,7 @@
 #include "FrCodRule.h"
 
 using json = nlohmann::json;
+namespace fs = std::filesystem;
 
 using FrRuleMap =
 std::map<FrObjectCode, FrCodRule>;
@@ -20,7 +23,7 @@ fs::path FrCodifier::findJson() {
 
 }
 
-const FrCodRule& FrCodifier::getRule(FrObjectCode code)
+const FrCodRule FrCodifier::getRule(FrObjectCode code)
 {
 	return rules_.at(code);
 }

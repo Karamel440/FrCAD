@@ -1,5 +1,9 @@
 #pragma once
+#include <concepts>
+
 #include <aced.h>
+
+#include "FrExceptions.h"
 
 class FrObject {
 protected:
