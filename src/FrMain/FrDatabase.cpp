@@ -1,6 +1,8 @@
+#include <dbobjptr.h>
+
 #include "FrDatabase.h"
 #include "FrEntity.h"
-#include <dbobjptr.h>
+#include <FrLayer.h>
 
 std::optional<FrLayer> FrRefDatabase::layer(const std::wstring& layerName) {
 	AcDbObjectPointer<AcDbLayerTable> lt{

@@ -23,12 +23,17 @@
     <ClInclude Include="FrDatabase.h" />
     <ClInclude Include="FrEntity.h" />
     <ClInclude Include="FrExceptions.h" />
+    <ClInclude Include="FrLayer.h" />
+    <ClInclude Include="FrObject.h" />
     <ClInclude Include="FrOutput.h" />
+    <ClInclude Include="FrString.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FrDatabase.cpp" />
     <ClCompile Include="FrEntity.cpp" />
+    <ClCompile Include="FrLayer.cpp" />
     <ClCompile Include="FrOutput.cpp" />
+    <ClCompile Include="FrString.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

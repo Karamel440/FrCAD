@@ -18,6 +18,7 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FrCodifierCore", "..\src\FrCodifierCore\FrCodifierCore.vcxproj", "{6A43D5C6-C862-4B4B-A52F-133836FC7247}"
 	ProjectSection(ProjectDependencies) = postProject
 		{17A127B6-AD5A-44A6-A962-C8F6D5B24488} = {17A127B6-AD5A-44A6-A962-C8F6D5B24488}
+		{539C81EE-485C-494D-9D22-FBBEC1A090CF} = {539C81EE-485C-494D-9D22-FBBEC1A090CF}
 	EndProjectSection
 EndProject
 Global

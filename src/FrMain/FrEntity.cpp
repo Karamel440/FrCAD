@@ -1,6 +1,10 @@
+#include <string>
+
+#include <dbobjptr2.h>
+
 #include "FrEntity.h"
 #include "FrExceptions.h"
-#include <dbobjptr2.h>
+#include "FrLayer.h"
 
 FrEntity::~FrEntity() = default;
 
@@ -117,23 +121,6 @@ void FrEntity::setLinetype(const std::wstring& name) {
 	);
 }
 
-std::wstring FrLayer::name() const {
-	if (id_ == AcDbObjectId::kNull)
-		throw FrException{ L"Некорректный слой" };
-
-	AcDbObjectPointer<AcDbLayerTableRecord> layer{
-		id_,
-		AcDb::kForRead
-	};
-
-	FrCheckStatus(
-		layer.openStatus(),
-		L"Не удалось открыть слой"
-	);
-
-	return layer->name().kwszPtr();
-}
-
 FrLayer FrEntity::layer() const {
 	if (ent_) {
 		return FrLayer{ ent_->layerId() };
@@ -150,78 +137,4 @@ FrLayer FrEntity::layer() const {
 	);
 
 	return FrLayer{ entity->layerId() };
-}
-
-bool FrLayer::isReference() const {
-	if (id_ == AcDbObjectId::kNull)
-		throw FrException{ L"Некорректный слой" };
-
-	AcDbObjectPointer<AcDbLayerTableRecord> layer{
-		id_,
-		AcDb::kForRead
-	};
-
-	FrCheckStatus(
-		layer.openStatus(),
-		L"Не удалось открыть слой"
-	);
-
-	return layer->isDependent();
-}
-
-void FrLayer::off() const {
-	AcDbObjectPointer<AcDbLayerTableRecord> layer{
-		id_,
-		AcDb::kForWrite
-	};
-
-
-	FrCheckStatus(
-		layer.openStatus(),
-		L"Не удалось открыть слой"
-	);
-
-	layer->setIsOff(true);
-}
-
-void FrLayer::on() const {
-	AcDbObjectPointer<AcDbLayerTableRecord> layer{
-		id_,
-		AcDb::kForWrite
-	};
-
-	FrCheckStatus(
-		layer.openStatus(),
-		L"Не удалось открыть слой"
-	);
-
-	layer->setIsOff(false);
-}
-
-void FrLayer::freeze() const {
-	AcDbObjectPointer<AcDbLayerTableRecord> layer{
-		id_,
-		AcDb::kForWrite
-	};
-
-	FrCheckStatus(
-		layer.openStatus(),
-		L"Не удалось открыть слой"
-	);
-
-	layer->setIsFrozen(true);
-}
-
-void FrLayer::unfreeze() const {
-	AcDbObjectPointer<AcDbLayerTableRecord> layer{
-		id_,
-		AcDb::kForWrite
-	};
-
-	FrCheckStatus(
-		layer.openStatus(),
-		L"Не удалось открыть слой"
-	);
-
-	layer->setIsFrozen(false);
 }

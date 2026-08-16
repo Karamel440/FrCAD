@@ -1,8 +1,13 @@
-#include "FrCod.h"
-#include <json.hpp>
+#include <string>
 #include <fstream>
+
+#include <json.hpp>
+
 #include <FrExceptions.h>
-#include <magic_enum.hpp>
+
+#include "FrCodifier.h"
+#include "FrCodifierEnums.h"
+#include "FrCodRule.h"
 
 using json = nlohmann::json;
 
@@ -33,7 +38,7 @@ FrRuleMap FrCodifier::loadConfig(
 	json config;
 	stream >> config;
 
-	
+
 
 	FrRuleMap result;
 

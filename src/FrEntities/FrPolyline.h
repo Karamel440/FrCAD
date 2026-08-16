@@ -1,7 +1,9 @@
 #pragma once
 #include <aced.h>
 #include <dbents.h>
+
 #include <FrEntity.h>
+#include <FrObject.h>
 
 class FrPolyline : public FrEntity {
 	friend class FrRefDatabase;
@@ -22,4 +24,3 @@ public:
 	void SetElevation(double elevation);
 
 };
-

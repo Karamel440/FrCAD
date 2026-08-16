@@ -19,11 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FrCod.h" />
+    <ClInclude Include="FrCodifier.h" />
+    <ClInclude Include="FrCodifierEnums.h" />
+    <ClInclude Include="FrCodRule.h" />
+    <ClInclude Include="FrFactory.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FrCod.cpp" />
-    <ClCompile Include="FrGetConfig.cpp" />
+    <ClCompile Include="FrCodifer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -79,7 +81,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>D:\Macro\Auto\objectARX 2026\inc;D:\Macro\Fr\src\FrMain</IncludePath>
+    <IncludePath>D:\Macro\Auto\objectARX 2026\inc;D:\Macro\Fr\src\FrMain;D:\Macro\Fr\src\FrEntities</IncludePath>
     <LibraryPath>D:\Macro\Auto\objectARX 2026\lib-x64;$(WindowsSDK_LibraryPath_x64);$(VC_LibraryPath_x64);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
