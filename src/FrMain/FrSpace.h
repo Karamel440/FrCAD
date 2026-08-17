@@ -1,4 +1,6 @@
 #pragma once
+#include <aced.h>
+
 #include <FrObject.h>
 #include <FrEntity.h>
 
@@ -9,6 +11,7 @@ class FrSpace : public FrObject {
 		: FrObject{ id } {}
 
 public:
+	using NativeType = AcDbBlockTableRecord;
 
 	void append(FrEntity& ent);
 

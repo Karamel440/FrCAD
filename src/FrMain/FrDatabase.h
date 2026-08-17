@@ -10,6 +10,7 @@
 #include "FrEntity.h"
 #include "FrExceptions.h"
 #include "FrLayer.h"
+#include "FrSpace.h"
 
 class FrRefDatabase {
 protected:
@@ -28,6 +29,14 @@ public:
 	std::optional<FrLayer> layer(const std::wstring& layerName);
 
 	std::vector<FrLayer> layers() const;
+
+	std::optional<FrSpace> space(const std::wstring& name) const;
+
+	FrSpace modelSpace() const;
+
+	FrSpace createSpace(const std::wstring& name);
+
+	FrSpace cloneSpace(const FrSpace& space);
 
 	FrLayer createLayer (const std::wstring& layerName);
 

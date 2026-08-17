@@ -1,4 +1,5 @@
 #include <dbobjptr.h>
+#include <dbidmap.h>
 
 #include "FrDatabase.h"
 #include "FrEntity.h"
@@ -157,4 +158,112 @@ void FrRefDatabase::saveAs(const std::filesystem::path& path) {
 		db_->saveAs(path.wstring().c_str()),
 		L"Не удалось сохранить файл по выбранному пути"
 	);
+}
+
+FrSpace FrRefDatabase::modelSpace() const
+{
+	AcDbObjectPointer<AcDbBlockTable> blockTable{
+		db_->blockTableId(),
+		AcDb::kForRead
+	};
+
+	FrCheckStatus(
+		blockTable.openStatus(),
+		L"Не удалось открыть таблицу блоков"
+	);
+
+	AcDbObjectId modelSpaceId;
+
+	FrCheckStatus(
+		blockTable->getAt(
+			ACDB_MODEL_SPACE,
+			modelSpaceId
+		),
+		L"Не удалось получить Model Space"
+	);
+
+	return FrSpace{ modelSpaceId };
+}
+
+FrSpace FrRefDatabase::createSpace(const std::wstring& name) {
+	AcDbObjectPointer<AcDbBlockTable> bt{
+		db_->blockTableId(),
+		AcDb::kForWrite
+	};
+
+	FrCheckStatus(
+		bt.openStatus(),
+		L"Не удалось открыть пространство"
+	);
+
+	AcDbObjectId id;
+	if (bt->getAt(name.c_str(), id) == Acad::eOk)
+		throw FrException{
+		L"В бд уже есть такой блок"
+	};
+
+	AcDbObjectPointer<AcDbBlockTableRecord> space;
+
+	FrCheckStatus(
+		space.create(),
+		L"Не удалось создать пространство"
+	);
+
+	FrCheckStatus(
+		space->setName(name.c_str()),
+		L"Не удалось задать имя пространства"
+	);
+
+	AcDbObjectId spaceId;
+
+	FrCheckStatus(
+		bt->add(spaceId, space.object()),
+		L"Не удалось добавить пространство в таблицу блоков"
+	);
+
+	return FrSpace{ spaceId };
+}
+
+FrSpace FrRefDatabase::cloneSpace(const FrSpace& space) {
+	AcDbObjectPointer<AcDbBlockTable> bt{
+		db_->blockTableId(),
+		AcDb::kForRead
+	};
+
+	FrCheckStatus(
+		bt.openStatus(),
+		L"Не удалось открыть запись"
+	);
+
+	AcDbObjectId id;
+	if (bt->getAt(space.name().c_str(), id) == Acad::eOk)
+		throw FrException{
+		L"В бд уже есть такой блок"
+	};
+
+	AcDbObjectIdArray spaceId;
+	spaceId.append(space.id_);
+	
+	AcDbIdMapping map;
+
+	AcDbDatabase* sourceDb = space.id_.database();
+
+	sourceDb->wblockCloneObjects(
+		spaceId,
+		db_->blockTableId(),
+		map,
+		AcDb::kDrcReplace
+	);
+
+	AcDbIdPair pair;
+	
+	pair.setKey(space.id_);
+	if (!map.compute(pair) ||
+		pair.value() == AcDbObjectId::kNull ||
+		!pair.isCloned())
+		throw FrException{
+		L"Не удалось клонировать блок"
+	};
+
+	return FrSpace{ pair.value() };
 }

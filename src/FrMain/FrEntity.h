@@ -12,7 +12,7 @@ class FrEntity : public FrObject {
 	std::unique_ptr<AcDbEntity> ent_;
 
 	friend class FrRefDatabase;
-	friend class FrObject;
+	friend class FrSpace;
 
 protected:
 	
