@@ -26,6 +26,10 @@ public:
 		};
 	}
 
+
+	std::vector<FrEntity> clone(const std::vector<FrEntity>& ents);
+
+
 	std::optional<FrLayer> layer(const std::wstring& layerName);
 
 	std::vector<FrLayer> layers() const;
@@ -104,6 +108,10 @@ public:
 	~FrDatabase() {
 		delete db_;
 	}
+
+	FrDatabase()
+		:FrRefDatabase(new AcDbDatabase(false))
+	{}
 
 	FrDatabase(const FrDatabase&) = delete;
 	FrDatabase& operator=(const FrDatabase&) = delete;
