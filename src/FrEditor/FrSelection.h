@@ -1,6 +1,8 @@
 #pragma once
 #include <aced.h>
 #include <adscodes.h>
+#include <filesystem>
+
 #include <FrEntity.h>
 #include <FrDatabase.h>
 #include <FrExceptions.h>
@@ -35,6 +37,8 @@
 //        return ents_;
 //    }
 //};
+
+namespace fs = std::filesystem;
 
 template <typename T = FrEntity>
 requires std::derived_from<T,FrEntity>
@@ -95,4 +99,8 @@ AcGePoint3d FrGetPoint(
 AcGePoint3d FrGetPoint(
     AcGePoint3d firstPoint,
     const std::wstring& message = L"Выберете первую точку"
+);
+
+fs::path FrSelectFolder(
+    const std::wstring& promt
 );

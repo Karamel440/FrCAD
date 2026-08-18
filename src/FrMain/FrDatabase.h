@@ -117,8 +117,6 @@ public:
 		:FrRefDatabase(new AcDbDatabase(Adesk::kTrue, Adesk::kTrue))
 	{}
 
-	
-
 	explicit FrDatabase(const std::filesystem::path& fileToRead)
 		:FrRefDatabase(loadDatabase(fileToRead)) {}
 

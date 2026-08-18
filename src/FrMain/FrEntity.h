@@ -17,7 +17,7 @@ class FrEntity : public FrObject {
 protected:
 	
 	explicit FrEntity(std::unique_ptr<AcDbEntity> entity) : ent_(std::move(entity)) {}
-	explicit FrEntity(AcDbObjectId id) : FrObject(id) {}
+	
 
 	AcDbEntity* entity() noexcept {
 		return ent_.get();
@@ -29,6 +29,8 @@ protected:
 
 public:
 	virtual ~FrEntity();
+
+	explicit FrEntity(AcDbObjectId id) : FrObject(id) {}
 
 	using NativeType = AcDbEntity;
 
