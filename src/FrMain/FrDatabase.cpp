@@ -405,6 +405,24 @@ FrSpace FrRefDatabase::cloneSpace(const FrSpace& space) {
 	return FrSpace{ pair.value() };
 }
 
+AcDbDatabase* FrDatabase::loadDatabase(const std::filesystem::path& fileToRead)
+{
+	AcDbDatabase* temp = new AcDbDatabase(Adesk::kFalse,Adesk::kTrue);
+	
+	auto es = 
+		temp->readDwgFile(fileToRead.c_str());
+
+	if (es != Acad::eOk) {
+		delete temp;
+		throw FrException{
+		L"Не удалось прочитать файл!",
+		es
+		};
+	}
+
+	return temp;
+}
+
 //common for FrDatabase
 void FrDatabase::read(std::filesystem::path& path)
 {

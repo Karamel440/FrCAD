@@ -104,14 +104,23 @@ public:
 };
 
 class FrDatabase : public FrRefDatabase {
+
+	static AcDbDatabase* loadDatabase(const std::filesystem::path& fileToRead);
+	void read(std::filesystem::path& path);
+
 public:
 	~FrDatabase() {
 		delete db_;
 	}
 
 	FrDatabase()
-		:FrRefDatabase(new AcDbDatabase(false))
+		:FrRefDatabase(new AcDbDatabase(Adesk::kTrue, Adesk::kTrue))
 	{}
+
+	
+
+	explicit FrDatabase(const std::filesystem::path& fileToRead)
+		:FrRefDatabase(loadDatabase(fileToRead)) {}
 
 	FrDatabase(const FrDatabase&) = delete;
 	FrDatabase& operator=(const FrDatabase&) = delete;
@@ -130,8 +139,6 @@ public:
 		}
 		return *this;
 	}
-
-	void read(std::filesystem::path& path);
 };
 
 inline FrRefDatabase FrDbCurrent() {
