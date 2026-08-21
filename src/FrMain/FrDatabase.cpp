@@ -183,6 +183,54 @@ std::optional<FrSpace> FrRefDatabase::space(const std::wstring& name) const
 	return std::optional<FrSpace>(space);
 }
 
+std::vector<FrSpace> FrRefDatabase::spaces() const
+{
+	AcDbObjectPointer<AcDbBlockTable> blockTable{
+		db_->blockTableId(),
+		AcDb::kForRead
+	};
+
+	FrCheckStatus(
+		blockTable.openStatus(),
+		L"Не удалось открыть таблицу блоков"
+	);
+
+	AcDbBlockTableIterator* iter = nullptr;
+
+	FrCheckStatus(
+		blockTable->newIterator(iter),
+		L"Не удалось создать итератор"
+	);
+
+	std::vector<FrSpace> result;
+
+	for (iter->start(); !iter->done(); iter->step()) {
+		AcDbObjectId id;
+		
+		auto es = iter->getRecordId(id);
+		
+		if (es != Acad::eOk)
+			continue;
+
+		AcDbObjectPointer<AcDbBlockTableRecord> rec{
+			id,
+			AcDb::kForRead
+		};
+
+		FrCheckStatus(
+			rec.openStatus(),
+			L"Не удалось открыть блок"
+		);
+
+		if (rec->isLayout())
+			continue;
+
+		result.push_back(FrSpace{ id });
+	}
+	delete iter;
+	return result;
+}
+
 FrSpace FrRefDatabase::createSpace(const std::wstring& name) {
 	AcDbObjectPointer<AcDbBlockTable> bt{
 		db_->blockTableId(),

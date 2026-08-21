@@ -120,12 +120,13 @@ public:
 		return result;
 	}
 
-
 	std::optional<FrLayer> layer(const std::wstring& layerName);
 
 	std::vector<FrLayer> layers() const;
 
 	std::optional<FrSpace> space(const std::wstring& name) const;
+
+	std::vector<FrSpace> spaces() const;
 
 	FrSpace modelSpace() const;
 

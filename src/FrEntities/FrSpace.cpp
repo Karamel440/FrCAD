@@ -58,3 +58,6 @@ std::wstring FrSpace::name() const
     return static_cast<const ACHAR*>(name);
 }
 
+AcDbObjectId FrSpace::id() const {
+    return id_;
+}
