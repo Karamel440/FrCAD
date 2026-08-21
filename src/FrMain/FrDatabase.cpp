@@ -7,36 +7,7 @@
 
 //common operations
 void FrRefDatabase::append(FrEntity& ent) {
-	if (!ent.ent_)
-		throw FrException{
-		L"Сущность уже добавлена в бд"
-	};
-
-	AcDbObjectPointer<AcDbBlockTableRecord> space{
-		db_->currentSpaceId(),
-		AcDb::kForWrite
-	};
-
-	Acad::ErrorStatus es = space.openStatus();
-	if (es != Acad::eOk)
-		throw FrException{
-		L"Не удалось открыть model space",
-		es
-	};
-
-	AcDbObjectId id;
-	AcDbEntity* entity = ent.ent_.get();
-
-	es = space->appendAcDbEntity(id, entity);
-	if (es != Acad::eOk)
-		throw FrException{
-		L"Не удалось добавить сущность в бд",
-		es
-	};
-	ent.ent_.release();
-	ent.id_ = id;
-
-	entity->close();
+	return modelSpace().append(ent);
 }
 
 void FrRefDatabase::saveAs(const std::filesystem::path& path) {
@@ -45,97 +16,6 @@ void FrRefDatabase::saveAs(const std::filesystem::path& path) {
 		db_->saveAs(path.wstring().c_str()),
 		L"Не удалось сохранить файл по выбранному пути"
 	);
-}
-
-std::vector<FrEntity> FrRefDatabase::clone(const std::vector<FrEntity>& ents) {
-	AcDbObjectIdArray ids;
-
-	AcDbDatabase* tempDb = nullptr;
-
-	for (const auto& ent : ents) {
-		if (ent.id_ == AcDbObjectId::kNull)
-			throw FrException{
-			L"Не добавленная в бд сущность!"
-		};
-
-		if (ent.id_.isErased())
-			throw FrException{
-			L"стертая сущность!"
-		};
-
-		if (!tempDb)
-			tempDb = ent.id_.database();
-
-		if (tempDb == db_)
-			throw FrException{
-			L"Копирование в ту же бд запрещено!"
-		};
-
-		if (ent.id_.database() != tempDb)
-			throw FrException{
-			L"Сущности из разных бд!"
-		};
-		ids.append(ent.id_);
-	}
-
-	AcDbObjectPointer<AcDbBlockTable> blockTable{
-		db_->blockTableId(),
-		AcDb::kForRead
-	};
-
-	FrCheckStatus(
-		blockTable.openStatus(),
-		L"Не удалось открыть таблицу блоков"
-	);
-
-	AcDbObjectId modelSpaceId;
-
-	FrCheckStatus(
-		blockTable->getAt(
-			ACDB_MODEL_SPACE,
-			modelSpaceId
-		),
-		L"Не удалось получить Model Space"
-	);
-
-	blockTable.close();
-
-	AcDbIdMapping map;
-
-	auto es = tempDb->wblockCloneObjects(
-		ids,
-		modelSpaceId,
-		map,
-		AcDb::kDrcIgnore
-	);
-
-	if (es != Acad::eOk)
-		throw FrException{
-		L"Не удалось клонировать сущности",
-		es
-	};
-
-
-
-	std::vector<FrEntity> result;
-
-	for (const auto& ent : ents) {
-		AcDbIdPair pair;
-		pair.setKey(ent.id_);
-
-		if (!map.compute(pair))
-			throw FrException{
-			L"Не найдены клоны объектов!"
-		};
-
-		if (pair.value() == AcDbObjectId::kNull)
-			throw FrException{
-			L"Некорректный объект"
-		};
-		result.push_back(FrEntity{ pair.value() });
-	}
-
-	return result;
 }
 
 //FrLayer

@@ -6,6 +6,7 @@
 #include <dbobjptr2.h>
 #include <dbapserv.h>
 #include <vector>
+#include <dbidmap.h>
 
 #include "FrEntity.h"
 #include "FrExceptions.h"
@@ -26,8 +27,98 @@ public:
 		};
 	}
 
+	template <typename T = FrEntity>
+		requires std::derived_from<T, FrEntity>
+	std::vector<T> clone(const std::vector<T>& ents) {
+		AcDbObjectIdArray ids;
 
-	std::vector<FrEntity> clone(const std::vector<FrEntity>& ents);
+		AcDbDatabase* tempDb = nullptr;
+
+		for (const auto& ent : ents) {
+			if (ent.id_ == AcDbObjectId::kNull)
+				throw FrException{
+				L"Не добавленная в бд сущность!"
+			};
+
+			if (ent.id_.isErased())
+				throw FrException{
+				L"стертая сущность!"
+			};
+
+			if (!tempDb)
+				tempDb = ent.id_.database();
+
+			if (tempDb == db_)
+				throw FrException{
+				L"Копирование в ту же бд запрещено!"
+			};
+
+			if (ent.id_.database() != tempDb)
+				throw FrException{
+				L"Сущности из разных бд!"
+			};
+			ids.append(ent.id_);
+		}
+
+		AcDbObjectPointer<AcDbBlockTable> blockTable{
+			db_->blockTableId(),
+			AcDb::kForRead
+		};
+
+		FrCheckStatus(
+			blockTable.openStatus(),
+			L"Не удалось открыть таблицу блоков"
+		);
+
+		AcDbObjectId modelSpaceId;
+
+		FrCheckStatus(
+			blockTable->getAt(
+				ACDB_MODEL_SPACE,
+				modelSpaceId
+			),
+			L"Не удалось получить Model Space"
+		);
+
+		blockTable.close();
+
+		AcDbIdMapping map;
+
+		auto es = tempDb->wblockCloneObjects(
+			ids,
+			modelSpaceId,
+			map,
+			AcDb::kDrcIgnore
+		);
+
+		if (es != Acad::eOk)
+			throw FrException{
+			L"Не удалось клонировать сущности",
+			es
+		};
+
+
+
+		std::vector<T> result;
+
+		for (const auto& ent : ents) {
+			AcDbIdPair pair;
+			pair.setKey(ent.id_);
+
+			if (!map.compute(pair))
+				throw FrException{
+				L"Не найдены клоны объектов!"
+			};
+
+			if (pair.value() == AcDbObjectId::kNull)
+				throw FrException{
+				L"Некорректный объект"
+			};
+			result.push_back(T{ pair.value() });
+		}
+
+		return result;
+	}
 
 
 	std::optional<FrLayer> layer(const std::wstring& layerName);
