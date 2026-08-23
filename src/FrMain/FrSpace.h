@@ -1,5 +1,8 @@
 #pragma once
 #include <aced.h>
+#include <vector>
+
+#include <dbobjptr.h>
 
 #include <FrObject.h>
 #include <FrEntity.h>
