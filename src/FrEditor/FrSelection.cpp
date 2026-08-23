@@ -164,3 +164,15 @@ fs::path FrSelectFolder(const std::wstring& prompt)
     CoUninitialize();
     return string;
 }
+
+int FrGetInt(const std::wstring& promt)
+{
+    int number;
+    
+    if (acedGetInt(promt.c_str(), number) != RTNORM)
+        throw FrException{
+        L"Не удалось выбрать число"
+    };
+    
+    return number;
+}

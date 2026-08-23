@@ -2,6 +2,7 @@
 #include <aced.h>
 #include <adscodes.h>
 #include <filesystem>
+#include <string>
 
 #include <FrEntity.h>
 #include <FrDatabase.h>
@@ -104,3 +105,5 @@ AcGePoint3d FrGetPoint(
 fs::path FrSelectFolder(
     const std::wstring& promt
 );
+
+int FrGetInt(const std::string& promt);

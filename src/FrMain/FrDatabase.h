@@ -137,57 +137,9 @@ public:
 	FrLayer createLayer (const std::wstring& layerName);
 
 	template <typename T>
+		requires std::derived_from<T, FrEntity>
 	std::vector<T> entities() const {
-		AcDbObjectPointer<AcDbBlockTableRecord> space{
-	db_->currentSpaceId(),
-	AcDb::kForRead
-		};
-		 Acad::ErrorStatus es =
-			space.openStatus();
-
-			FrCheckStatus(
-				es,
-				L"Не удалось открыть ms"
-			);
-
-		AcDbBlockTableRecordIterator* rawIter = nullptr;
-
-		es = space->newIterator(rawIter);
-
-		std::unique_ptr<AcDbBlockTableRecordIterator> iter{
-			rawIter
-		};
-
-		FrCheckStatus(
-			es,
-			L"Не удалось создать итератор"
-		);
-
-		std::vector<T> result;
-
-		for (; !iter->done(); iter->step()) {
-			AcDbObjectId id;
-
-			using NativeType = typename T::NativeType;
-
-			es = iter->getEntityId(id);
-
-			if (es != Acad::eOk)
-				continue;
-
-			if (id.isNull()) {
-				continue;
-			}
-
-			FrObject obj{ id };
-
-			if (!obj.is<T>()) {
-				continue;
-			}
-
-			result.push_back(obj.as<T>());
-		}
-		return result;
+		return modelSpace().entities<T>();
 	}
 
 	void append(FrEntity& ent);
