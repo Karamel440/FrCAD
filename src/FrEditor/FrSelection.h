@@ -106,4 +106,4 @@ fs::path FrSelectFolder(
     const std::wstring& promt
 );
 
-int FrGetInt(const std::string& promt);
+int FrGetInt(const std::wstring& promt);

@@ -74,4 +74,7 @@ public:
 
 	std::wstring name() const;
 	AcDbObjectId id() const;
+
+	bool isModelSpace() const;
+	bool isLayout() const;
 };

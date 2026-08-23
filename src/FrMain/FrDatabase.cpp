@@ -221,10 +221,6 @@ std::vector<FrSpace> FrRefDatabase::spaces() const
 			rec.openStatus(),
 			L"Не удалось открыть блок"
 		);
-
-		if (rec->isLayout())
-			continue;
-
 		result.push_back(FrSpace{ id });
 	}
 	delete iter;

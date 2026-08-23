@@ -61,3 +61,40 @@ std::wstring FrSpace::name() const
 AcDbObjectId FrSpace::id() const {
     return id_;
 }
+
+bool FrSpace::isModelSpace() const
+{
+    AcDbObjectPointer <AcDbBlockTable> bt{
+        id_.database()->blockTableId(),
+        AcDb::kForRead
+    };
+
+    FrCheckStatus(
+        bt.openStatus(),
+        L"Ќе удалось открыть таблицу блоков"
+    );
+
+    AcDbObjectId msId;
+
+    FrCheckStatus(
+        bt->getAt(ACDB_MODEL_SPACE, msId),
+        L"Ќе удалось получить им€ пространства модели"
+    );
+    
+    return id_ == msId;
+}
+
+bool FrSpace::isLayout() const
+{
+    AcDbObjectPointer<AcDbBlockTableRecord> btr{
+        id_,
+        AcDb::kForRead
+    };
+
+    FrCheckStatus(
+        btr.openStatus(),
+        L"Ќе удалось открыть пространство"
+    );
+
+    return btr->isLayout();
+}
