@@ -8,28 +8,39 @@
 
 namespace fs = std::filesystem;
 
+class FrFactory;
+
 class FrCodifier {
 
 	using FrRuleMap = std::map<FrObjectCode, FrCodRule>;
+	using FrLayerMap = std::map<LayerCode, LayerInfo>;
 
 	FrRuleMap rules_;
+	FrLayerMap layers_;
 
-	FrRuleMap loadConfig(
+	FrRuleMap loadObjectConfig(
 		const fs::path& path
 	);
 
-	fs::path findJson();
+	FrLayerMap loadLayerConfig(
+		const fs::path& path
+	);
+
+	fs::path findObjectJson() const;
+	fs::path findLayerJson() const;
 
 public:
 	FrCodifier()
-		: rules_(loadConfig(findJson())) {
+		: rules_(loadObjectConfig(findObjectJson())),
+		layers_(loadLayerConfig(findLayerJson()))
+	{
 	}
 
-	FrCodifier(fs::path path)
-		:rules_(loadConfig(path)) {
+	explicit FrCodifier(fs::path path)
+		:rules_(loadObjectConfig(path)) {
 	}
 
 	FrFactory factory(FrRefDatabase& db) const;
-	const FrCodRule getRule(FrObjectCode code);
+	const FrCodRule getRule(FrObjectCode code) const;
 
 };

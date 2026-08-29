@@ -23,6 +23,10 @@ protected:
 		return ent_.get();
 	}
 
+	AcDbEntity* entity() const noexcept {
+		return ent_.get();
+	}
+
 	AcDbObjectId id() const noexcept {
 		return id_;
 	}
@@ -48,5 +52,5 @@ public:
 	FrLayer layer() const;
 	int color() const;
 	AcDb::LineWeight lineWeight() const;
-	std::wstring& Linetype() const;
+	std::wstring Linetype() const;
 };

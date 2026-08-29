@@ -1,0 +1,298 @@
+{
+  "sewer": {
+    "rainSewer": {
+      "layer": "30_Канализация",
+      "colorIndex": 3,
+      "lineWeight": 0.4,
+      "lineType": "Continuous"
+    },
+
+    "mainSewer": {
+      "layer": "30_Канализация",
+      "colorIndex": 12,
+      "lineWeight": 0.4,
+      "lineType": "M5_196"
+    },
+
+    "pressureSewer": {
+      "layer": "30_Канализация",
+      "colorIndex": 132,
+      "lineWeight": 0.4,
+      "lineType": "M5_200"
+    }
+  },
+
+  "water": {
+    "underWater": {
+      "layer": "31_Водопровод",
+      "colorIndex": 4,
+      "lineWeight": 0.4,
+      "lineType": "Continuous"
+    },
+
+    "groundWater": {
+      "layer": "31_Водопровод",
+      "colorIndex": 4,
+      "lineWeight": 0.4,
+      "lineType": "M5_201_А"
+    }
+  },
+
+  "heating": {
+    "underHeating": {
+      "layer": "32_Теплосеть",
+      "colorIndex": 200,
+      "lineWeight": 0.4,
+      "lineType": "M5_205"
+    },
+
+    "groundHeating": {
+      "layer": "32_Теплосеть",
+      "colorIndex": 200,
+      "lineWeight": 0.4,
+      "lineType": "M5_206"
+    }
+  },
+
+  "gaz": {
+    "underGaz": {
+      "layer": "33_Газопровод",
+      "colorIndex": 5,
+      "lineWeight": 0.4,
+      "lineType": "M5_203"
+    },
+
+    "groundGaz": {
+      "layer": "33_Газопровод",
+      "colorIndex": 5,
+      "lineWeight": 0.4,
+      "lineType": "M5_204"
+    }
+  },
+
+  "special": {
+    "underOilPipeline": {
+      "layer": "34_Трубопроводы спецназначения",
+      "colorIndex": 7,
+      "lineWeight": 0.4,
+      "lineType": "M5_207"
+    },
+
+    "groundOilPipeline": {
+      "layer": "34_Трубопроводы спецназначения",
+      "colorIndex": 7,
+      "lineWeight": 0.4,
+      "lineType": "M5_208"
+    },
+
+    "underFuelOilPipeline": {
+      "layer": "34_Трубопроводы спецназначения",
+      "colorIndex": 7,
+      "lineWeight": 0.4,
+      "lineType": "M5_209_А"
+    },
+
+    "underAirPipeline": {
+      "layer": "34_Трубопроводы спецназначения",
+      "colorIndex": 7,
+      "lineWeight": 0.4,
+      "lineType": "M5_211"
+    },
+
+    "groundAirPipeline": {
+      "layer": "34_Трубопроводы спецназначения",
+      "colorIndex": 7,
+      "lineWeight": 0.4,
+      "lineType": "M5_212"
+    },
+
+    "underAshPipeline": {
+      "layer": "34_Трубопроводы спецназначения",
+      "colorIndex": 7,
+      "lineWeight": 0.4,
+      "lineType": "M5_213"
+    },
+
+    "groundAshPipeline": {
+      "layer": "34_Трубопроводы спецназначения",
+      "colorIndex": 7,
+      "lineWeight": 0.4,
+      "lineType": "M5_213а"
+    },
+
+    "underSpecial": {
+      "layer": "34_Трубопроводы спецназначения",
+      "colorIndex": 7,
+      "lineWeight": 0.4,
+      "lineType": "Continuous"
+    },
+
+    "groundSpecial": {
+      "layer": "34_Трубопроводы спецназначения",
+      "colorIndex": 7,
+      "lineWeight": 0.4,
+      "lineType": "M5_210"
+    }
+  },
+
+  "phone": {
+    "underPhone": {
+      "layer": "35_Телефон",
+      "colorIndex": 6,
+      "lineWeight": 0.2,
+      "lineType": "M5_215"
+    },
+
+    "groundPhone": {
+      "layer": "35_Телефон",
+      "colorIndex": 6,
+      "lineWeight": 0.2,
+      "lineType": "M5_215_A"
+    }
+  },
+
+  "lowCurrent": {
+    "tsrCable": {
+      "layer": "36_Слаботочные кабели",
+      "colorIndex": 1,
+      "lineWeight": 0.2,
+      "lineType": "M5_502"
+    },
+
+    "controlSignalCable": {
+      "layer": "36_Слаботочные кабели",
+      "colorIndex": 1,
+      "lineWeight": 0.2,
+      "lineType": "Continuous"
+    },
+
+    "elevatorSignalCable": {
+      "layer": "36_Слаботочные кабели",
+      "colorIndex": 1,
+      "lineWeight": 0.2,
+      "lineType": "M5_223"
+    },
+
+    "fireSignalCable": {
+      "layer": "36_Слаботочные кабели",
+      "colorIndex": 1,
+      "lineWeight": 0.2,
+      "lineType": "Continuous"
+    },
+
+    "radioCable": {
+      "layer": "36_Слаботочные кабели",
+      "colorIndex": 1,
+      "lineWeight": 0.2,
+      "lineType": "M5_222"
+    },
+
+    "groundRadioCable": {
+      "layer": "36_Слаботочные кабели",
+      "colorIndex": 1,
+      "lineWeight": 0.2,
+      "lineType": "M5_222_А"
+    },
+
+    "otherLowCurrentCable": {
+      "layer": "36_Слаботочные кабели",
+      "colorIndex": 1,
+      "lineWeight": 0.2,
+      "lineType": "Continuous"
+    }
+  },
+
+  "lowVoltage": {
+    "lowVoltage": {
+      "layer": "37_Кабель низкого напряжения",
+      "colorIndex": 1,
+      "lineWeight": 0.2,
+      "lineType": "M5_227"
+    },
+
+    "groundLowVoltage": {
+      "layer": "37_Кабель низкого напряжения",
+      "colorIndex": 1,
+      "lineWeight": 0.2,
+      "lineType": "M5_227_А"
+    }
+  },
+
+  "highVoltage": {
+    "highVoltage6_10": {
+      "layer": "38_Кабели высокого напряжения",
+      "colorIndex": 1,
+      "lineWeight": 0.2,
+      "lineType": "M5_226"
+    },
+
+    "highVoltage35": {
+      "layer": "38_Кабели высокого напряжения",
+      "colorIndex": 1,
+      "lineWeight": 0.4,
+      "lineType": "M5_225"
+    },
+
+    "highVoltage110_330": {
+      "layer": "38_Кабели высокого напряжения",
+      "colorIndex": 1,
+      "lineWeight": 0.4,
+      "lineType": "M5_224"
+    }
+  },
+
+  "DC": {
+    "directCurrentCable": {
+      "layer": "39_Кабель постоянного тока",
+      "colorIndex": 1,
+      "lineWeight": 0.2,
+      "lineType": "M5_230"
+    }
+  },
+
+  "protection": {
+    "electroDrainCable": {
+      "layer": "40_Защита от электрокоррозии",
+      "colorIndex": 1,
+      "lineWeight": 0.2,
+      "lineType": "M5_232"
+    },
+
+    "groundElectroDrainCable": {
+      "layer": "40_Защита от электрокоррозии",
+      "colorIndex": 1,
+      "lineWeight": 0.2,
+      "lineType": "M5_232_А"
+    },
+
+    "potentialEqualizingJumper": {
+      "layer": "40_Защита от электрокоррозии",
+      "colorIndex": 1,
+      "lineWeight": 0.2,
+      "lineType": "M5_232"
+    },
+
+    "anodeConductor": {
+      "layer": "40_Защита от электрокоррозии",
+      "colorIndex": 7,
+      "lineWeight": 0.2,
+      "lineType": "Continuous"
+    }
+  },
+
+  "zone": {
+    "underCableZone": {
+      "layer": "41_Зоны кабелей",
+      "colorIndex": 1,
+      "lineWeight": 0.2,
+      "lineType": "Continuous"
+    },
+
+    "groundCableZone": {
+      "layer": "41_Зоны кабелей",
+      "colorIndex": 1,
+      "lineWeight": 0.2,
+      "lineType": "M5_210"
+    }
+  }
+}

@@ -1,22 +1,74 @@
 #pragma once
 #include <string>
+#include "FrCodifierEnums.h"
+#include <FrString.h>
 
-struct FrCodRule
+#include <magic_enum.hpp>
+
+struct RawInput {
+	std::string layer;
+	std::string layerCode;
+	std::string layerTag;
+	
+	std::string objectCode;
+
+	int colorIndex;
+
+	double lineWeight;
+	std::string lineType;
+
+};
+
+struct LayerInfo {
+	std::wstring layerName;
+	FrLayerTag tag;
+};
+
+struct ViewInfo {
+	int colorIndex;
+	std::wstring lineType;
+	AcDb::LineWeight lineWeight;
+};
+
+class FrCodRule
 {
-	std::string layer_;
-	int colorIndex_;
-	double lineWeight_;
-	std::string lineType_;
+	LayerCode layer_;
+	ViewInfo view_;
 
-	FrCodRule(
-		std::string layer,
-		int colorIndex,
-		double lineWeight,
-		std::string lineType) :
-		layer_(layer),
-		colorIndex_(colorIndex),
-		lineWeight_(lineWeight),
-		lineType_(lineType)
-	{
+public:
+	FrCodRule(const RawInput& input) {
+		
+		auto code = magic_enum::enum_cast<LayerCode>(input.layerCode);
+
+		if (!code) {
+			throw FrException{
+				L"Не удалось распарсить слои"
+			};
+		}
+
+		layer_ = *code;
+
+		view_.colorIndex = input.colorIndex;
+		view_.lineType = toWstring(input.lineType);
+		view_.lineWeight = static_cast<AcDb::LineWeight>(input.lineWeight * 100);
+	}
+			
+	LayerCode layerCode() const {
+		return layer_;
+	}
+	ViewInfo view() const {
+		return view_;
+	}
+
+	int colorIndex() const {
+		return view_.colorIndex;
+	}
+
+	const std::wstring& lineType() const {
+		return view_.lineType;
+	}
+	AcDb::LineWeight lineWeight() const {
+		return view_.lineWeight;
 	}
 };
+

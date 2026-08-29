@@ -19,16 +19,21 @@ std::map<FrObjectCode, FrCodRule>;
 
 namespace fs = std::filesystem;
 
-fs::path FrCodifier::findJson() {
+fs::path FrCodifier::findObjectJson() const {
 
 }
 
-const FrCodRule FrCodifier::getRule(FrObjectCode code)
+FrFactory FrCodifier::factory(FrRefDatabase& db) const
+{
+	return FrFactory(*this,db);
+}
+
+const FrCodRule FrCodifier::getRule(FrObjectCode code) const
 {
 	return rules_.at(code);
 }
 
-FrRuleMap FrCodifier::loadConfig(
+FrRuleMap FrCodifier::loadObjectConfig(
 	const fs::path& path) {
 
 	std::ifstream stream{ path };
@@ -51,25 +56,24 @@ FrRuleMap FrCodifier::loadConfig(
 			auto code =
 				magic_enum::enum_cast<FrObjectCode>(objectName);
 
-			auto layer =
+			RawInput input{};
+
+			input.layer =
 				rule.at("layer").get<std::string>();
 
-			auto color =
+			input.colorIndex =
 				rule.at("colorIndex").get<int>();
 
-			auto lineWeight =
+			input.lineWeight =
 				rule.at("lineWeight").get<double>();
 
-			auto lineType =
+			input.lineType =
 				rule.at("lineType").get<std::string>();
 
 			result.emplace(
 				*code,
 				FrCodRule{
-					layer,
-					color,
-					lineWeight,
-					lineType
+					input
 				}
 			);
 		}

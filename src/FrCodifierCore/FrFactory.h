@@ -10,17 +10,12 @@
 class FrFactory {
     friend class FrCodifier;
 
-    const FrCodifier& cod_;
+   const FrCodifier& cod_;
     FrRefDatabase& db_;
 
     FrFactory(
-        const FrCodifier& cod,
-        FrRefDatabase& db
-    )
-        : cod_(cod),
-        db_(db)
-    {
-    }
+        const FrCodifier& cod, FrRefDatabase& db)
+        : cod_(cod), db_(db) {}
 
     void applyRule(
         FrEntity& entity,
@@ -31,4 +26,12 @@ public:
     FrPolyline createLineObject(
         FrObjectCode code
     ) const;
+
+    FrFactory& operator=(FrFactory&&) = delete;
+    FrFactory(FrFactory&&) = delete;
+
+    FrFactory& operator=(const FrFactory&) = delete;
+    FrFactory(const FrFactory&) = delete;
+
+    ~FrFactory() = default;
 };

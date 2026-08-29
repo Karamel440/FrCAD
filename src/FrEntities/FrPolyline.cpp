@@ -1,5 +1,7 @@
-#include "FrEntities.h"
+#include "FrPolyline.h"
+
 #include <FrExceptions.h>
+
 #include <dbobjptr.h>
 #include <dbobjptr2.h>
 

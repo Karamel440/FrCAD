@@ -53,3 +53,18 @@ enum class FrObjectCode
     underCableZone,
     groundCableZone
 };
+
+enum class LayerCode {
+    sewer,
+    water,
+    heating,
+    gas,
+    phone
+};
+
+enum class FrLayerTag {
+    under,
+    plan,
+    cable,
+    frame
+};

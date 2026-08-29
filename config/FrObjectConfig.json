@@ -1,0 +1,15 @@
+{
+  "rainSewer": {
+    "layerCode": "sewer",
+    "colorIndex": 3,
+    "lineType": "Continuous"
+    "lineWeight": 0.4
+  },
+
+  "mainSewer": {
+    "layerCode": "sewer",
+    "colorIndex": 12,
+    "lineType": "M5_196",
+    "lineWeight": 0.4
+  }
+}
