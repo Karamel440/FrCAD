@@ -184,13 +184,14 @@ AcGePoint3d FrText::position() const
 }
 
 double FrText::rotation() const {
+	
 	if (id() == AcDbObjectId::kNull && !entity())
 		throw FrException{ L"Не валидный объект" };
 
 	if (entity()) {
 		auto ent = AcDbText::cast(entity());
 
-		return ent->rotation();
+		return ent->rotation() * 180.0 / std::numbers::pi;
 	}
 
 	AcDbObjectPointer<AcDbText> ent{
@@ -203,5 +204,5 @@ double FrText::rotation() const {
 		L"Не удалось открыть текст"
 	);
 
-	return ent->rotation();
+	return ent->rotation() * 180.0 / std::numbers::pi;
 }
