@@ -102,6 +102,38 @@ void FrText::setRotation(double degrees) {
 	);
 }
 
+void FrText::setHeight(double units) {
+	if (id() == AcDbObjectId::kNull && !entity())
+		throw FrException{ L"Не валидный объект" };
+
+	if (entity()) {
+
+		auto ent = AcDbText::cast(entity());
+
+		FrCheckStatus(
+			ent->setHeight(units),
+			L"Не удалось установить высоту текста"
+		);
+		return;
+	}
+
+	AcDbObjectPointer<AcDbText> ent{
+		id(),
+		AcDb::kForWrite
+	};
+
+	FrCheckStatus(
+		ent.openStatus(),
+		L"Не удалось открыть текст"
+	);
+
+	FrCheckStatus(
+		ent->setHeight(units),
+		L"Не удалось установить высоту текста"
+	);
+
+}
+
 
 std::wstring FrText::content() const
 {
@@ -149,4 +181,27 @@ AcGePoint3d FrText::position() const
 	);
 
 	return ent->position();
+}
+
+double FrText::rotation() const {
+	if (id() == AcDbObjectId::kNull && !entity())
+		throw FrException{ L"Не валидный объект" };
+
+	if (entity()) {
+		auto ent = AcDbText::cast(entity());
+
+		return ent->rotation();
+	}
+
+	AcDbObjectPointer<AcDbText> ent{
+		id(),
+		AcDb::kForRead
+	};
+
+	FrCheckStatus(
+		ent.openStatus(),
+		L"Не удалось открыть текст"
+	);
+
+	return ent->rotation();
 }

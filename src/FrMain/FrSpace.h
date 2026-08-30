@@ -10,11 +10,23 @@
 class FrSpace : public FrObject {
 	friend class FrRefDatabase;
 
-	FrSpace(AcDbObjectId id)
-		: FrObject{ id } {}
-
 public:
 	using NativeType = AcDbBlockTableRecord;
+
+	FrSpace(AcDbObjectId id)
+		: FrObject{ id } {
+
+		if (id.isNull())
+			throw FrException{
+			L"Некорректный объект в конструкторе FrSpace"
+		};
+
+		if (!id.objectClass()->isDerivedFrom(
+			AcDbBlockTableRecord::desc()))
+			throw FrException{
+			L"Переданный объект не является слоем"
+		};
+	}
 
 	void append(FrEntity& ent);
 

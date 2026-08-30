@@ -8,6 +8,8 @@ class FrBlockReference : public FrEntity {
 		:FrEntity(id) { }
 public:
 	
+	using NativeType = AcDbBlockReference;
+
 	FrBlockReference(FrSpace& space)
 		: FrEntity(
 			std::make_unique<AcDbBlockReference>(
@@ -17,6 +19,7 @@ public:
 		) { }
 
 	void setPosition(AcGePoint3d point);
+	void setRotation(double degree);
 
 	AcGePoint3d position() const;
 	FrSpace space() const;

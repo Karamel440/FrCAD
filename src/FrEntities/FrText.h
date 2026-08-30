@@ -4,6 +4,9 @@
 class FrText : public FrEntity {
 
 public:
+
+	using NativeType = AcDbText;
+
 	FrText()
 		:FrEntity(std::make_unique<AcDbText>()) {
 	}
@@ -40,8 +43,10 @@ public:
 	void setContent(const std::wstring& text);
 	void setPosition(AcGePoint3d pos);
 	void setRotation(double degrees);
+	void setHeight(double units);
 
 	std::wstring content() const;
 	AcGePoint3d position() const;
 	double rotation() const;
+	double height() const;
 };
