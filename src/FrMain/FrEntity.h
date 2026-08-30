@@ -6,6 +6,7 @@
 
 #include "FrObject.h"
 #include "FrLayer.h"
+#include "FrBounds.h"
 
 class FrEntity : public FrObject {
 	
@@ -53,4 +54,6 @@ public:
 	int color() const;
 	AcDb::LineWeight lineWeight() const;
 	std::wstring Linetype() const;
+
+	FrBounds bounds() const;
 };

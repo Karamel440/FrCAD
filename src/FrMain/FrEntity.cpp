@@ -7,7 +7,6 @@
 
 #include "FrEntity.h"
 #include "FrExceptions.h"
-#include "FrLayer.h"
 
 FrEntity::~FrEntity() = default;
 
@@ -140,4 +139,40 @@ FrLayer FrEntity::layer() const {
 	);
 
 	return FrLayer{ entity->layerId() };
+}
+
+
+FrBounds FrEntity::bounds() const {
+	if (!ent_ && id_ == AcDbObjectId::kNull)
+		throw FrException{ L"Пустой объект" };
+
+	if (ent_) {
+		AcDbExtents ext;
+
+		FrCheckStatus(
+			ent_->getGeomExtents(ext),
+			L"Ошибка при получении габаритов сущности"
+		);
+
+		return FrBounds{ ext };
+	}
+
+	AcDbObjectPointer<AcDbEntity> ent{
+		id_,
+		AcDb::kForRead
+	};
+
+	FrCheckStatus(
+		ent.openStatus(),
+		L"Ошибка при открытии объекта"
+	);
+
+	AcDbExtents ext;
+
+	FrCheckStatus(
+		ent->getGeomExtents(ext),
+		L"Ошибка при получении габаритов сущности"
+	);
+
+	return FrBounds{ ext };
 }

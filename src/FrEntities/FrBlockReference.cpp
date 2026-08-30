@@ -35,7 +35,7 @@ void FrBlockReference::setPosition(AcGePoint3d point){
 }
 
 void FrBlockReference::setRotation(double degree) {
-	
+
 	const double radians = degree * std::numbers::pi / 180.0;
 
 	if (id() == AcDbObjectId::kNull && !entity())
@@ -65,6 +65,7 @@ void FrBlockReference::setRotation(double degree) {
 	FrCheckStatus(
 		ent->setRotation(radians),
 		L"Ќе удалось установить поворот блока"
+	);
 }
 
 
