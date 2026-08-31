@@ -94,13 +94,29 @@ AcGePoint3d FrBlockReference::position() const {
 }
 
 FrSpace FrBlockReference::space() const {
+
 	if (id() == AcDbObjectId::kNull && !entity())
 		throw FrException{ L"Не валидный объект" };
 
 	if (entity()) {
 		auto ent = AcDbBlockReference::cast(entity());
-		auto btr = ent->blockTableRecord();
 
-		return FrSpace{ btr };
+		return FrSpace{
+			ent->blockTableRecord()
+		};
 	}
+
+	AcDbObjectPointer<AcDbBlockReference> ent{
+		id(),
+		AcDb::kForRead
+	};
+
+	FrCheckStatus(
+		ent.openStatus(),
+		L"Не удалось открыть блок"
+	);
+
+	return FrSpace{
+		ent->blockTableRecord()
+	};
 }

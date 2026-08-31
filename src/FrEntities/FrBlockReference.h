@@ -4,6 +4,8 @@
 
 class FrBlockReference : public FrEntity {
 	
+	friend class FrObject;
+
 	FrBlockReference(AcDbObjectId id)
 		:FrEntity(id) { }
 public:
