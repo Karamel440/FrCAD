@@ -45,10 +45,21 @@ void FrText::setPosition(AcGePoint3d pos) {
 
 		auto ent = AcDbText::cast(entity());
 
-		FrCheckStatus(
-			ent->setPosition(pos),
-			L"Не удалось установить позицию текста"
-		);
+		if (ent->horizontalMode() == AcDb::kTextLeft &&
+			ent->verticalMode() == AcDb::kTextBase)
+		{
+			FrCheckStatus(
+				ent->setPosition(pos),
+				L"Не удалось установить позицию текста"
+			);
+		}
+		else
+		{
+			FrCheckStatus(
+				ent->setAlignmentPoint(pos),
+				L"Не удалось установить позицию текста"
+			);
+		}
 		return;
 	}
 
@@ -62,10 +73,21 @@ void FrText::setPosition(AcGePoint3d pos) {
 		L"Не удалось открыть текст"
 	);
 
-	FrCheckStatus(
-		ent->setPosition(pos),
-		L"Не удалось установить позицию текста"
-	);
+	if (ent->horizontalMode() == AcDb::kTextLeft &&
+		ent->verticalMode() == AcDb::kTextBase)
+	{
+		FrCheckStatus(
+			ent->setPosition(pos),
+			L"Не удалось установить позицию текста"
+		);
+	}
+	else
+	{
+		FrCheckStatus(
+			ent->setAlignmentPoint(pos),
+			L"Не удалось установить позицию текста"
+		);
+	}
 }
 
 void FrText::setRotation(double degrees) {
@@ -134,6 +156,98 @@ void FrText::setHeight(double units) {
 
 }
 
+void FrText::setJustify(FrJustify just) {
+	
+	if (id() == AcDbObjectId::kNull && !entity())
+		throw FrException{ L"Не валидный объект" };
+
+	if (entity()) {
+		auto ent = AcDbText::cast(entity());
+
+		AcGePoint3d point;
+
+		if (ent->horizontalMode() == AcDb::kTextLeft &&
+			ent->verticalMode() == AcDb::kTextBase)
+		{
+			point = ent->position();
+		}
+		else
+		{
+			point = ent->alignmentPoint();
+		}
+
+		switch (just)
+		{
+		case FrJustify::Left:
+		{
+			ent->setHorizontalMode(AcDb::kTextLeft);
+			ent->setVerticalMode(AcDb::kTextBase);
+			ent->setPosition(point);
+			break;
+		}
+			
+		case FrJustify::center:
+		{
+			ent->setHorizontalMode(AcDb::kTextCenter);
+			ent->setVerticalMode(AcDb::kTextVertMid);
+			ent->setAlignmentPoint(point);
+		}
+			break;
+		default:
+			throw FrException{
+				L"Не удалось выставить выравнивание"
+			};
+		}
+		return;
+	}
+
+	AcDbObjectPointer<AcDbText> ent{
+		id(),
+		AcDb::kForWrite
+	};
+
+	FrCheckStatus(
+		ent.openStatus(),
+		L"Не удалось открыть текст"
+	);
+
+	AcGePoint3d point;
+
+	if (ent->horizontalMode() == AcDb::kTextLeft &&
+		ent->verticalMode() == AcDb::kTextBase)
+	{
+		point = ent->position();
+	}
+	else
+	{
+		point = ent->alignmentPoint();
+	}
+
+
+	switch (just)
+	{
+	case FrJustify::Left:
+	{
+		ent->setHorizontalMode(AcDb::kTextLeft);
+		ent->setVerticalMode(AcDb::kTextBase);
+		ent->setPosition(point);
+		break;
+	}
+
+	case FrJustify::center:
+	{
+		ent->setHorizontalMode(AcDb::kTextCenter);
+		ent->setVerticalMode(AcDb::kTextVertMid);
+		ent->setAlignmentPoint(point);
+	}
+	break;
+	default:
+		throw FrException{
+			L"Не удалось выставить выравнивание"
+		};
+	}
+}
+
 
 std::wstring FrText::content() const
 {
@@ -167,7 +281,13 @@ AcGePoint3d FrText::position() const
 	if (entity()) {
 		auto ent = AcDbText::cast(entity());
 
-		return ent->position();
+		if (ent->horizontalMode() == AcDb::kTextLeft &&
+			ent->verticalMode() == AcDb::kTextBase)
+		{
+			return ent->position();
+		}
+
+		return ent->alignmentPoint();
 	}
 
 	AcDbObjectPointer<AcDbText> ent{
@@ -180,7 +300,13 @@ AcGePoint3d FrText::position() const
 		L"Не удалось открыть текст"
 	);
 
-	return ent->position();
+	if (ent->horizontalMode() == AcDb::kTextLeft &&
+		ent->verticalMode() == AcDb::kTextBase)
+	{
+		return ent->position();
+	}
+
+	return ent->alignmentPoint();
 }
 
 double FrText::rotation() const {
@@ -205,4 +331,53 @@ double FrText::rotation() const {
 	);
 
 	return ent->rotation() * 180.0 / std::numbers::pi;
+}
+
+FrJustify FrText::Justify() const {
+	if (id() == AcDbObjectId::kNull && !entity())
+		throw FrException{ L"Не валидный объект" };
+
+	if (entity()) {
+		auto ent = AcDbText::cast(entity());
+
+		auto hor = ent->horizontalMode();
+		auto vert = ent->verticalMode();
+
+		if (hor == AcDb::kTextLeft &&
+			vert == AcDb::kTextBase)
+			return FrJustify::Left;
+
+		else if (hor == AcDb::kTextCenter &&
+			vert == AcDb::kTextVertMid)
+			return FrJustify::center;
+
+		throw FrException{
+			L"Неизвестное выравнивание"
+		};
+	}
+
+	AcDbObjectPointer<AcDbText> ent{
+		id(),
+		AcDb::kForRead
+	};
+
+	FrCheckStatus(
+		ent.openStatus(),
+		L"Не удалось открыть текст"
+	);
+
+	auto hor = ent->horizontalMode();
+	auto vert = ent->verticalMode();
+
+	if (hor == AcDb::kTextLeft &&
+		vert == AcDb::kTextBase)
+		return FrJustify::Left;
+
+	else if (hor == AcDb::kTextCenter &&
+		vert == AcDb::kTextBase)
+		return FrJustify::center;
+
+	throw FrException{
+			L"Неизвестное выравнивание"
+	};
 }

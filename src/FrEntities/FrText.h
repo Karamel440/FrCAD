@@ -1,9 +1,20 @@
 #pragma once
 #include <FrEntity.h>
 
+enum class FrJustify {
+	Left,
+	center
+};
+
 class FrText : public FrEntity {
 
+	explicit FrText(AcDbObjectId id)
+		: FrEntity(id) {
+	}
+
 public:
+
+	friend class FrObject;
 
 	using NativeType = AcDbText;
 
@@ -44,9 +55,11 @@ public:
 	void setPosition(AcGePoint3d pos);
 	void setRotation(double degrees);
 	void setHeight(double units);
+	void setJustify(FrJustify just);
 
 	std::wstring content() const;
 	AcGePoint3d position() const;
 	double rotation() const;
 	double height() const;
+	FrJustify Justify() const;
 };
