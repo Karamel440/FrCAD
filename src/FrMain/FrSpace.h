@@ -86,6 +86,7 @@ public:
 
 	std::wstring name() const;
 	AcDbObjectId id() const;
+	FrRefDatabase database() const;
 
 	bool isModelSpace() const;
 	bool isLayout() const;

@@ -1,6 +1,7 @@
 #include <dbobjptr.h>
 
 #include <FrExceptions.h>
+#include <FrDatabase.h>
 
 #include "FrSpace.h"
 
@@ -60,6 +61,20 @@ std::wstring FrSpace::name() const
 
 AcDbObjectId FrSpace::id() const {
     return id_;
+}
+
+FrRefDatabase FrSpace::database() const {
+    AcDbObjectPointer<AcDbBlockTableRecord> space{
+        id_,
+        AcDb::kForRead
+    };
+
+    FrCheckStatus(
+        space.openStatus(),
+        L"Не удалось открыть пространство"
+    );
+
+    return FrRefDatabase{ space->database() };
 }
 
 bool FrSpace::isModelSpace() const
