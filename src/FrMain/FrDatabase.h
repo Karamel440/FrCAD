@@ -12,6 +12,7 @@
 #include "FrExceptions.h"
 #include "FrLayer.h"
 #include "FrSpace.h"
+#include "FrStyle.h"
 
 class FrRefDatabase {
 protected:
@@ -120,9 +121,11 @@ public:
 		return result;
 	}
 
+
 	std::optional<FrLayer> layer(const std::wstring& layerName);
 
 	std::vector<FrLayer> layers() const;
+
 
 	std::optional<FrSpace> space(const std::wstring& name) const;
 
@@ -133,6 +136,10 @@ public:
 	FrSpace createSpace(const std::wstring& name);
 
 	FrSpace cloneSpace(const FrSpace& space);
+
+
+	std::optional<FrStyle> style(const std::wstring& styleName);
+
 
 	FrLayer createLayer (const std::wstring& layerName);
 

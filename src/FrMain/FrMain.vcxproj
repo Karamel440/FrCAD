@@ -24,6 +24,7 @@
     <ClInclude Include="FrDatabase.h" />
     <ClInclude Include="FrEntity.h" />
     <ClInclude Include="FrExceptions.h" />
+    <ClInclude Include="FrStyle.h" />
     <ClInclude Include="FrUtils.h" />
     <ClInclude Include="FrLayer.h" />
     <ClInclude Include="FrObject.h" />
@@ -39,6 +40,7 @@
     <ClCompile Include="FrLayer.cpp" />
     <ClCompile Include="FrOutput.cpp" />
     <ClCompile Include="FrString.cpp" />
+    <ClCompile Include="FrSyle.cpp" />
     <ClCompile Include="FrUtils.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -329,6 +329,30 @@ FrSpace FrRefDatabase::cloneSpace(const FrSpace& space) {
 	return FrSpace{ pair.value() };
 }
 
+std::optional<FrStyle> FrRefDatabase::style(const std::wstring& styleName)
+{
+	AcDbObjectPointer<AcDbTextStyleTable> st{
+		db_->textStyleTableId(),
+		AcDb::kForRead
+	};
+	
+	FrCheckStatus(
+		st.openStatus(),
+		L"Не удалось открыть таблицу стилей"
+	);
+	
+	AcDbObjectId id;
+	
+	auto status = st->getAt(styleName.c_str(), id);
+
+	if (status == Acad::eKeyNotFound)
+		return std::nullopt;
+
+	FrCheckStatus(status, L"Не удалось получить стиль");
+
+	return FrStyle{ id };
+}
+
 AcDbDatabase* FrDatabase::loadDatabase(const std::filesystem::path& fileToRead)
 {
 	AcDbDatabase* temp = new AcDbDatabase(Adesk::kFalse,Adesk::kTrue);
