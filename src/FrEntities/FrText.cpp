@@ -248,6 +248,37 @@ void FrText::setJustify(FrJustify just) {
 	}
 }
 
+void FrText::setStyle(const FrStyle& style) {
+	
+	if (id() == AcDbObjectId::kNull && !entity())
+		throw FrException{ L"Не валидный объект" };
+
+	if (entity()) {
+		auto text = AcDbText::cast(entity());
+		
+		FrCheckStatus(
+			text->setTextStyle(style.id()),
+			L"Не удалось установить стиль тексту"
+		);
+		return;
+	}
+
+	AcDbObjectPointer<AcDbText> text{
+		id(),
+		AcDb::kForWrite
+	};
+
+	FrCheckStatus(
+		text.openStatus(),
+		L"Не удалось открыть текст"
+	);
+
+	FrCheckStatus(
+		text->setTextStyle(style.id()),
+		L"Не удалось установить стиль тексту"
+	);
+}
+
 
 std::wstring FrText::content() const
 {

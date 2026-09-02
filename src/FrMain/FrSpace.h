@@ -89,4 +89,5 @@ public:
 
 	bool isModelSpace() const;
 	bool isLayout() const;
+	bool isReference() const;
 };

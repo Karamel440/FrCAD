@@ -16,6 +16,10 @@ public:
 
 	FrObject() = default;
 
+	AcDbObjectId id() const {
+		return id_;
+	}
+
 	explicit FrObject(AcDbObjectId id)
 		: id_(id) {}
 

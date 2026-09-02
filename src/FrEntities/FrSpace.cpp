@@ -98,3 +98,17 @@ bool FrSpace::isLayout() const
 
     return btr->isLayout();
 }
+
+bool FrSpace::isReference() const {
+    AcDbObjectPointer<AcDbBlockTableRecord> btr{
+        id_,
+        AcDb::kForRead
+    };
+
+    FrCheckStatus(
+        btr.openStatus(),
+        L"Не удалось открыть пространство"
+    );
+
+    return btr->isFromExternalReference();
+}

@@ -32,6 +32,8 @@ public:
 	void setPosition(AcGePoint3d point);
 	void setRotation(double degree);
 
+	bool isReference() const;
+
 	AcGePoint3d position() const;
 	FrSpace space() const;
 };

@@ -1,5 +1,6 @@
 #pragma once
 #include <FrEntity.h>
+#include <FrStyle.h>
 
 enum class FrJustify {
 	Left,
@@ -56,6 +57,7 @@ public:
 	void setRotation(double degrees);
 	void setHeight(double units);
 	void setJustify(FrJustify just);
+	void setStyle(const FrStyle& style);
 
 	std::wstring content() const;
 	AcGePoint3d position() const;
