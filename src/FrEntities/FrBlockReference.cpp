@@ -68,6 +68,24 @@ void FrBlockReference::setRotation(double degree) {
 	);
 }
 
+void FrBlockReference::setElevation(double units){
+	if (id() == AcDbObjectId::kNull && !entity())
+		throw FrException{ L"Не валидный объект" };
+
+	if (entity()) {
+		auto ent = AcDbBlockReference::cast(entity());
+
+		auto pos = ent->position();
+		pos.z = units;
+
+		FrCheckStatus(
+			ent->setPosition(pos),
+			L"Не удалось установить высоту блока"
+		);
+		return;
+	}
+}
+
 
 AcGePoint3d FrBlockReference::position() const {
 	
@@ -120,3 +138,28 @@ FrSpace FrBlockReference::space() const {
 		ent->blockTableRecord()
 	};
 }
+
+double FrBlockReference::elevation() const
+{
+	if (id() == AcDbObjectId::kNull && !entity())
+		throw FrException{ L"Не валидный объект" };
+
+	if (entity()) {
+		auto ent = AcDbBlockReference::cast(entity());
+
+		return ent->position().z;
+	}
+
+	AcDbObjectPointer<AcDbBlockReference> ent{
+		id(),
+		AcDb::kForRead
+	};
+
+	FrCheckStatus(
+		ent.openStatus(),
+		L"Не удалось открыть блок"
+	);
+
+	return ent->position().z;
+}
+

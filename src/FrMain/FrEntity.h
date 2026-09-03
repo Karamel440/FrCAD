@@ -28,16 +28,16 @@ protected:
 		return ent_.get();
 	}
 
-	AcDbObjectId id() const noexcept {
-		return id_;
-	}
-
 public:
 	virtual ~FrEntity();
 
 	explicit FrEntity(AcDbObjectId id) : FrObject(id) {}
 
 	using NativeType = AcDbEntity;
+
+	AcDbObjectId id() const noexcept {
+		return id_;
+	}
 
 	FrEntity(const FrEntity&) = delete;
 	FrEntity& operator=(const FrEntity&) = delete;

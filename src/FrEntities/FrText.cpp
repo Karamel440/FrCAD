@@ -279,6 +279,14 @@ void FrText::setStyle(const FrStyle& style) {
 	);
 }
 
+void FrText::setElevation(double units) {
+
+	auto pos = position();
+	pos.z = units;
+
+	setPosition(pos);
+}
+
 
 std::wstring FrText::content() const
 {
@@ -364,7 +372,7 @@ double FrText::rotation() const {
 	return ent->rotation() * 180.0 / std::numbers::pi;
 }
 
-FrJustify FrText::Justify() const {
+FrJustify FrText::justify() const {
 	if (id() == AcDbObjectId::kNull && !entity())
 		throw FrException{ L"Не валидный объект" };
 

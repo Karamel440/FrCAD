@@ -58,10 +58,12 @@ public:
 	void setHeight(double units);
 	void setJustify(FrJustify just);
 	void setStyle(const FrStyle& style);
+	void setElevation(double units);
 
 	std::wstring content() const;
 	AcGePoint3d position() const;
 	double rotation() const;
 	double height() const;
-	FrJustify Justify() const;
+	FrJustify justify() const;
+	double elevation() const;
 };

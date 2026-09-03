@@ -74,6 +74,18 @@ FrRefDatabase FrSpace::database() const {
         L"Ќе удалось открыть пространство"
     );
 
+    if (space->isFromExternalReference()) {
+
+        auto db = space->xrefDatabase();
+
+        if (!db)
+            throw FrException{
+                L"Ќе удалось получить базу внешней ссылки"
+        };
+
+        return FrRefDatabase{ db };
+    }
+
     return FrRefDatabase{ space->database() };
 }
 
