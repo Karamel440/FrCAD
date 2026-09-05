@@ -115,7 +115,9 @@ public:
 				throw FrException{
 				L"Некорректный объект"
 			};
-			result.push_back(T{ pair.value() });
+			result.push_back(
+				FrObject{ pair.value() }.as<T>()
+			);
 		}
 
 		return result;
