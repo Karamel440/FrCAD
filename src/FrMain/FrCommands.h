@@ -1,6 +1,7 @@
 #pragma once
 #include "FrExceptions.h"
 #include "FrOutput.h"
+#include "FrString.h"
 
 template <void (*Command)()>
 void FrCommand() noexcept
@@ -25,10 +26,10 @@ void FrCommand() noexcept
 			FrPrint(*ex.status());
 		}
 	}
-	catch (const std::exception& exs) {
-		FrAlert(L"Стандартная ошибка");
-		FrPrint(exs.what());
+	catch (const std::exception& ex) {
+		FrAlert(toWstring(std::string{ ex.what() }));
 	}
+
 	catch (...) {
 		FrAlert(L"Неизвестная ошибка");
 	}

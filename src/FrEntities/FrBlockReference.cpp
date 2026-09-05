@@ -69,6 +69,7 @@ void FrBlockReference::setRotation(double degree) {
 }
 
 void FrBlockReference::setElevation(double units){
+	
 	if (id() == AcDbObjectId::kNull && !entity())
 		throw FrException{ L"Не валидный объект" };
 
@@ -84,6 +85,26 @@ void FrBlockReference::setElevation(double units){
 		);
 		return;
 	}
+
+
+	AcDbObjectPointer<AcDbBlockReference> ent{
+		id(),
+		AcDb::kForWrite
+	};
+
+	FrCheckStatus(
+		ent.openStatus(),
+		L"Не удалось открыть блок"
+	);
+
+	auto pos = ent->position();
+	pos.z = units;
+
+	FrCheckStatus(
+		ent->setPosition(pos),
+		L"Не удалось установить высоту блока"
+	);
+
 }
 
 

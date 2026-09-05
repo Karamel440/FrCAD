@@ -413,7 +413,7 @@ FrJustify FrText::justify() const {
 		return FrJustify::Left;
 
 	else if (hor == AcDb::kTextCenter &&
-		vert == AcDb::kTextBase)
+		vert == AcDb::kTextVertMid)
 		return FrJustify::center;
 
 	throw FrException{
