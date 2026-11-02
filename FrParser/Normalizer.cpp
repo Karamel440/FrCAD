@@ -103,6 +103,9 @@ void Parser::normalizeRawInput(std::wstring& raw) {
 
         else if (raw[i] == L'\n')
             replaceAll(raw, L"\n", L" ");
+
+        else if (raw[i] == L'\t')
+            replaceAll(raw, L"\t", L" ");
     }
 
     removeDoubleSigns(raw);
