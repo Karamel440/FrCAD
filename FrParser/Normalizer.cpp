@@ -84,6 +84,7 @@ void Parser::removeDoubleSigns(std::wstring& str) {
 void Parser::normalizeRawInput(std::wstring& raw) {
 
 	toLower(raw);
+    removeDoubleSigns(raw);
 
 	for (const auto& var : notFind) {
 		replaceAll(raw, var, L"н.о.");
@@ -93,7 +94,18 @@ void Parser::normalizeRawInput(std::wstring& raw) {
 		replaceAll(raw, var, L"к.к.");
 	}
 
-	removeDoubleSigns(raw);
+    for (int i{}; i < raw.size(); i++) {
+        if (raw[i] == L'\u00A0')
+            replaceAll(raw, L"\u00A0", L" ");
+
+        else if (raw[i] == L'\r')
+            replaceAll(raw, L"\r", L" ");
+
+        else if (raw[i] == L'\n')
+            replaceAll(raw, L"\n", L" ");
+    }
+
+    removeDoubleSigns(raw);
 }
 
 void Parser::normalizeZones(std::vector<Zone>& zones) {
@@ -102,7 +114,8 @@ void Parser::normalizeZones(std::vector<Zone>& zones) {
 
 	std::vector<int> KKyears{};
     std::vector<int> NOyears{};
-    Zone temp{};
+    std::vector<Zone> freeZones{};
+
 
 	//1.Собрать информацию из всех зон
 	for (size_t index{}; index < zones.size();index++) {
@@ -151,9 +164,12 @@ void Parser::normalizeZones(std::vector<Zone>& zones) {
         }
 
 		if (zones[index].tag == ZoneTag::Freezone) {
-            for (auto& token : zones[index].tokens) {
-                temp.tag = ZoneTag::Freezone;
-                temp.tokens.push_back(token);
+            Zone freeZone = zones[index];
+            
+            trimZone(freeZone);
+
+            if (!freeZone.tokens.empty()) {
+            freeZones.push_back(std::move(freeZone));
             }
         }
 
@@ -198,8 +214,10 @@ void Parser::normalizeZones(std::vector<Zone>& zones) {
         }
     }
 
-    if (!temp.tokens.empty()) {
-        result.push_back(temp);
+    if (!freeZones.empty()) {
+        for (const auto& zone : freeZones) {
+            result.push_back(std::move(zone));
+        }
     }
 
     //3.Расставить запятые между зонами
@@ -211,6 +229,35 @@ void Parser::normalizeZones(std::vector<Zone>& zones) {
     }
     zones = result;
 
+}
+
+void Parser::trimZone(Zone& zone) {
+    
+    //1. Пройтись по началу зоны
+    size_t i{};
+
+    while (i < zone.tokens.size() &&
+           (zone.tokens[i].flag == TokenFlag::Separator || zone.tokens[i].value == L" ")) {
+
+        ++i;
+    }
+
+    zone.tokens.erase(zone.tokens.begin(), zone.tokens.begin() + i);
+
+    i = 0;
+
+    auto size = zone.tokens.size();
+
+    if (size == 0)
+        return;
+    //2. пройтись по концу зоны
+    while (i < zone.tokens.size() && 
+        (zone.tokens[size - 1 - i].flag == TokenFlag::Separator || zone.tokens[size - 1 - i].value == L" ")) {
+
+        i++;
+    }
+
+    zone.tokens.erase(zone.tokens.end() - i, zone.tokens.end());
 }
 
 std::wstring Parser::createString(std::vector<Zone>& zones) {

@@ -22,9 +22,10 @@ bool isSign(const std::wstring& raw, size_t pos) {
 }
 
 bool isYearMarker(const std::wstring& raw, size_t pos) {
-	return 
-		raw.compare(pos, 2, L"ã.") == 0
-	    && (pos == 0 || raw[pos - 1] == L' ' || std::iswdigit(raw[pos - 1]));
+    return 
+		raw.compare(pos, 1, L"ã") == 0
+	    && (pos == 0 || raw[pos - 1] == L' ' || std::iswdigit(raw[pos - 1])) &&
+           (raw[pos + 1] == L',' || raw[pos + 1] == L'.' || std::iswspace(raw[pos + 1]) ||pos + 1 == raw.size());
 }
 } // namespace
 
@@ -84,7 +85,9 @@ std::vector<Token> Parser::tokenaize() {
 			Token token;
 			token.flag = TokenFlag::YearMarker;
 			token.value = L"ã.";
-			pos += 2;
+
+			pos + 1 < output.size() && output[pos + 1] == L'.' ? pos += 2 : pos += 1;
+
 			result.push_back(token);
 		}
 

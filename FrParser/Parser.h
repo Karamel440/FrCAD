@@ -24,6 +24,7 @@ class Parser {
 	void removeDoubleSigns(std::wstring & str);
     void normalizeRawInput(std::wstring& raw);
     void normalizeZones(std::vector<Zone>& zones);
+    void trimZone(Zone& zone);
 
 	std::vector<Token> tokenaize();
     void addZone(std::vector<Zone>& zones, bool status, int year);

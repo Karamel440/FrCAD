@@ -104,8 +104,11 @@ Zone createFreeZone(const std::vector<Token>& tokens, size_t& index) {
         return result;
     }
 
-    while (index < tokens.size() && tokens[index].flag != TokenFlag::KK &&
-           tokens[index].flag != TokenFlag::NO && tokens[index].flag != TokenFlag::YearMarker) {
+    while (
+        index < tokens.size() && 
+        tokens[index].flag != TokenFlag::KK &&
+        tokens[index].flag != TokenFlag::NO && 
+        tokens[index].flag != TokenFlag::YearMarker) {
 
         result.tokens.push_back(tokens[index]);
         ++index;
@@ -200,3 +203,4 @@ void Parser::addZone(std::vector<Zone>& zones, bool status, int year) {
         }
     }
 }
+
