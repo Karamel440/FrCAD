@@ -1,5 +1,17 @@
 #pragma once
 #include <string>
+#include <optional>
+
+#include "Tokenaizer.h"
+#include "Zoner.h"
+
+struct ZoneUpdate {
+    bool found;
+    int year;
+};
+
+std::wstring parse(std::optional<ZoneUpdate> update = std::nullopt);
+
 
 void replaceAll(std::wstring& str, std::wstring raw, std::wstring normal);
 void toLower(std::wstring& str);
@@ -10,8 +22,13 @@ class Parser {
 	std::wstring output{};
 
 	void removeDoubleSigns(std::wstring & str);
+    void normalizeRawInput(std::wstring& raw);
+    void normalizeZones(std::vector<Zone>& zones);
 
-	void normalizeRawInput(std::wstring & raw);
+	std::vector<Token> tokenaize();
+    void addZone(std::vector<Zone>& zones, bool status, int year);
+	std::vector<Zone> createZones(const std::vector<Token>& tokens);
+	std::wstring createString(std::vector<Zone>& zones);
 
 public:
 	Parser(const std::wstring input)
@@ -22,5 +39,10 @@ public:
 		:raw{ std::wstring{input} } {
 	}
 
-	std::wstring parse();
+
+	Parser(const std::wstring input,bool isFound,int year) : raw(input) {
+		
+	}
+
+	std::wstring parse(std::optional<ZoneUpdate> update = std::nullopt);
 };

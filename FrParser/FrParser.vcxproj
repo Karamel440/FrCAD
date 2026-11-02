@@ -122,13 +122,23 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(TargetDir)$(TargetName).lib" "D:\Macro\Fr\lib\"
+copy /Y "$(TargetPath)" "D:\Macro\Fr\dll\"
+copy /Y "$(ProjectDir)Parser.h" "D:\Macro\Fr\inc\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Exports.cpp" />
+    <ClCompile Include="Normalizer.cpp" />
     <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="Tokenaizer.cpp" />
+    <ClCompile Include="Zoner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Parser.h" />
+    <ClInclude Include="Tokenaizer.h" />
+    <ClInclude Include="Zoner.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

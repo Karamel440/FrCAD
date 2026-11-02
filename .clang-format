@@ -1,42 +1,48 @@
----
-Language: Cpp
 BasedOnStyle: LLVM
+Language: Cpp
 
-# Отступы
-UseTab: ForIndentation
-TabWidth: 4
+# Отступы — четыре пробела
 IndentWidth: 4
 ContinuationIndentWidth: 4
+TabWidth: 4
+UseTab: Never
 
-# Длина строки и переносы
+# Перенос длинных строк
 ColumnLimit: 100
-AlignAfterOpenBracket: DontAlign
-BinPackArguments: false
-BinPackParameters: false
-BreakBeforeBinaryOperators: NonAssignment
 
-# Скобки и пробелы
-BreakBeforeBraces: Attach
-SpaceBeforeParens: ControlStatements
-SpacesInParentheses: false
-PointerAlignment: Left
+# Открывающая скобка остаётся на той же строке
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterFunction: false
+  AfterControlStatement: Never
+  AfterClass: false
+  AfterStruct: false
+  AfterEnum: false
+  BeforeElse: true
+  BeforeCatch: true
+  IndentBraces: false
 
-# Не сжимать обычные конструкции в одну строку
-AllowShortFunctionsOnASingleLine: Empty
+# Короткие блоки тоже оформляются в несколько строк
+AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: Never
+AllowShortLambdasOnASingleLine: None
 
-# Инициализаторы { ... }
-Cpp11BracedListStyle: true
+# Пробелы: if (condition), function(argument), array[index]
+SpaceBeforeParens: ControlStatements
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
 
-# include: <...> сверху, "..." снизу, между группами пустая строка
-SortIncludes: true
-IncludeBlocks: Regroup
-IncludeCategories:
-  - Regex: '^<.*>'
-    Priority: -1
-  - Regex: '^".*"'
-    Priority: 0
+# Ссылки и указатели: const Zone& zone, Zone* zone
+DerivePointerAlignment: false
+PointerAlignment: Left
 
-# Комментарии не переформатировать
-ReflowComments: false
+# public/private на уровне объявления класса
+AccessModifierOffset: -4
+
+# Максимум одна пустая строка подряд
+MaxEmptyLinesToKeep: 1
+
+# Сохранять исходный порядок include
+SortIncludes: false

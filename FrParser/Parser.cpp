@@ -1,103 +1,28 @@
 #include <Windows.h>
 #include <string>
-#include "Parser.h"
 #include <vector>
 
-const std::vector<std::wstring> notFind {
-    L"не обнаружено. ",
-    L"не обнаружено ",
-    L"не обнаружен. ",
-    L"не обнаружен ",
+#include "Parser.h"
 
-    L"необнаружено. ",
-    L"необнаружено ",
-    L"необнаружен. ",
-    L"необнаружен ",
+std::wstring Parser::parse(std::optional<ZoneUpdate> update) {
+    output = raw;
+    normalizeRawInput(output);
 
-    L"не обн. ",
-    L"не обн ",
+    auto tokens = tokenaize();
+    auto zones = createZones(tokens);
 
-    L"необн. ",
-    L"необн ",
+    if (update) {
+        addZone(zones, update->found, update->year);
+    }
 
-    L"необ. ",
-    L"необ ",
+    normalizeZones(zones);
 
-    L"не обнаружено.",
-    L"не обнаружено",
-    L"не обнаружен.",
-    L"не обнаружен",
+    output = createString(zones);
+    removeDoubleSigns(output);
 
-    L"необнаружено.",
-    L"необнаружено",
-    L"необнаружен.",
-    L"необнаружен",
-
-    L"не обн.",
-    L"не обн",
-
-    L"необн.",
-    L"необн",
-
-    L"необ.",
-    L"необ"
-};
-
-const std::vector<std::wstring> found {
-    L"к. к. ",
-    L"к .к. ",
-    L"к . к. ",
-
-    L"кк. ",
-    L"кк ",
-    L"к.к. ",
-    L"к.к ",
-
-    L"к. к.",
-    L"к .к.",
-    L"к . к.",
-
-    L"кк.",
-    L"кк",
-
-    L"к.к"
-};
-
-void Parser::removeDoubleSigns(std::wstring& str) {
-
-	while (str.find(L"..") != std::wstring::npos) {
-		replaceAll(str, L"..", L".");
-	}
-
-	while (str.find(L"  ") != std::wstring::npos) {
-		replaceAll(str, L"  ", L" ");
-	}
-
-	while (str.find(L",,") != std::wstring::npos) {
-		replaceAll(str, L",,", L",");
-	}
+    return output;
 }
 
-void Parser::normalizeRawInput(std::wstring& raw) {
-
-	toLower(raw);
-
-	for (const auto& var : notFind) {
-		replaceAll(raw, var, L"н.о.");
-	}
-
-	for (const auto& var : found) {
-		replaceAll(raw, var, L"к.к.");
-	}
-
-	removeDoubleSigns(raw);
-}
-
-std::wstring Parser::parse() {
-	output = raw;
-	normalizeRawInput(output);
-	return output;
-}
 
 void replaceAll(std::wstring& str, std::wstring raw, std::wstring normal) {
 
