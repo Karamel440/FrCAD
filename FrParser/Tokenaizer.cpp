@@ -18,7 +18,14 @@ bool isNumber(const std::wstring& raw, size_t pos) {
 }
 
 bool isSign(const std::wstring& raw, size_t pos) {
-	return raw[pos] == L',' || raw[pos] == L';' || raw[pos] == L'-';
+    const auto ch = raw[pos];
+
+    return 
+		ch == L',' || 
+		ch == L';' || 
+		ch == L'-' || 
+		ch == L'\u2013' ||
+        ch == L'\u2014';                                             
 }
 
 bool isYearMarker(const std::wstring& raw, size_t pos) {
