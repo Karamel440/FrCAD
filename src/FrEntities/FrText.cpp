@@ -420,3 +420,20 @@ FrJustify FrText::justify() const {
 			L"Неизвестное выравнивание"
 	};
 }
+
+double FrText::elevation() const {
+    if (id() == AcDbObjectId::kNull && !entity())
+        throw FrException{L"Не валидный объект"};
+
+    if (entity()) {
+        auto ent = AcDbText::cast(entity());
+
+        return ent->position().z;
+    }
+
+    AcDbObjectPointer<AcDbText> ent{id(), AcDb::kForRead};
+
+    FrCheckStatus(ent.openStatus(), L"Не удалось открыть текст");
+
+    return ent->position().z;
+}

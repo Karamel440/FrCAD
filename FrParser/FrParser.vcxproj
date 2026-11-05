@@ -136,6 +136,7 @@ copy /Y "$(ProjectDir)Parser.h" "D:\Macro\Fr\inc\"</Command>
     <ClCompile Include="Zoner.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FrParser.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Tokenaizer.h" />
     <ClInclude Include="Zoner.h" />

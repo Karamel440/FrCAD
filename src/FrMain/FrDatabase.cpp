@@ -5,6 +5,19 @@
 #include "FrEntity.h"
 #include <FrLayer.h>
 
+std::filesystem::path FrRefDatabase::path() const {
+    const ACHAR* filename = nullptr;
+
+    if (db_->getFilename(filename) != Acad::eOk || !filename || !*filename)
+        throw FrException{L"Чертёж не имеет пути. Сохраните DWG."};
+
+    return std::filesystem::path{filename};
+}
+
+std::filesystem::path FrRefDatabase::folder() const {
+    return path().parent_path();
+}
+
 //common operations
 void FrRefDatabase::append(FrEntity& ent) {
 	return modelSpace().append(ent);

@@ -28,6 +28,11 @@ public:
 		};
 	}
 
+	std::filesystem::path path() const;
+
+    std::filesystem::path folder() const;
+  
+
 	template <typename T = FrEntity>
 		requires std::derived_from<T, FrEntity>
 	std::vector<T> clone(const std::vector<T>& ents) {
