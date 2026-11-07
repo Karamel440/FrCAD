@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37027.9
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FrArchive", "FrArchive.vcxproj", "{2885F996-5605-49C3-BE21-BE46FBF89025}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		DebugARX|x64 = DebugARX|x64
+		DebugARX|x86 = DebugARX|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2885F996-5605-49C3-BE21-BE46FBF89025}.Debug|x64.ActiveCfg = Debug|x64
+		{2885F996-5605-49C3-BE21-BE46FBF89025}.Debug|x64.Build.0 = Debug|x64
+		{2885F996-5605-49C3-BE21-BE46FBF89025}.Debug|x86.ActiveCfg = Debug|Win32
+		{2885F996-5605-49C3-BE21-BE46FBF89025}.Debug|x86.Build.0 = Debug|Win32
+		{2885F996-5605-49C3-BE21-BE46FBF89025}.DebugARX|x64.ActiveCfg = DebugARX|x64
+		{2885F996-5605-49C3-BE21-BE46FBF89025}.DebugARX|x64.Build.0 = DebugARX|x64
+		{2885F996-5605-49C3-BE21-BE46FBF89025}.DebugARX|x86.ActiveCfg = DebugARX|Win32
+		{2885F996-5605-49C3-BE21-BE46FBF89025}.DebugARX|x86.Build.0 = DebugARX|Win32
+		{2885F996-5605-49C3-BE21-BE46FBF89025}.Release|x64.ActiveCfg = Release|x64
+		{2885F996-5605-49C3-BE21-BE46FBF89025}.Release|x64.Build.0 = Release|x64
+		{2885F996-5605-49C3-BE21-BE46FBF89025}.Release|x86.ActiveCfg = Release|Win32
+		{2885F996-5605-49C3-BE21-BE46FBF89025}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5F1BAFC3-2EC6-4A44-8DC9-92479FDF6DCC}
+	EndGlobalSection
+EndGlobal

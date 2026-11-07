@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <FrQtRoot Condition="'$(FrQtRoot)' == ''">C:\Qt\6.8.3\msvc2022_64</FrQtRoot>
+    <FrQtLibrarySuffix Condition="'$(Configuration)' == 'Debug'">d</FrQtLibrarySuffix>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(FrQtRoot)\include;$(FrQtRoot)\include\QtCore;$(FrQtRoot)\include\QtGui;$(FrQtRoot)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(FrQtRoot)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+</Project>

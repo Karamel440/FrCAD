@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{6c73fe89-c52c-4d93-870f-46fb3f885562}</ProjectGuid>
-    <RootNamespace>FrParser</RootNamespace>
+    <ProjectGuid>{9239e1c4-f64e-4cab-b0a5-da0412eb507a}</ProjectGuid>
+    <RootNamespace>FrLayers</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -40,10 +40,11 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>PGOptimize</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -70,6 +71,14 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetExt>.arx</TargetExt>
+    <IncludePath>D:\Документы\Visual Studio 2022\Acad\CadFramework;D:\Macro\SDKs\ObjectARX\2026\inc;D:\Macro\SDKs\Fr\inc</IncludePath>
+    <LibraryPath>D:\Macro\SDKs\ObjectARX\2026\lib-x64;$(WindowsSDK_LibraryPath_x64);$(VC_LibraryPath_x64);D:\Macro\SDKs\Fr\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetExt>.arx</TargetExt>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -121,25 +130,20 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>accore.lib;ac1st25.lib;acdb25.lib;acge25.lib;acad.lib;rxapi.lib;acgiapi.lib;acui25.lib;AcPal.lib;FrMain.lib;FrEntities.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>D:\Macro\SDKs\ObjectARX\2026\inc\AcRxDefault.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(TargetDir)$(TargetName).lib" "D:\Macro\Fr\lib\"
-copy /Y "$(TargetPath)" "D:\Macro\Fr\dll\"
-copy /Y "$(ProjectDir)Parser.h" "D:\Macro\Fr\inc\"</Command>
+      <Command>xcopy /Y /F "$(TargetPath)" "D:\Macro\Auto\CAD\dev\arx"
+xcopy /Y /F "$(TargetPath)" "D:\Macro\Auto\Картография\Общие\arx"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Exports.cpp" />
-    <ClCompile Include="Normalizer.cpp" />
-    <ClCompile Include="Parser.cpp" />
-    <ClCompile Include="Tokenaizer.cpp" />
-    <ClCompile Include="Zoner.cpp" />
+    <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="Layers.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FrParser.h" />
-    <ClInclude Include="Parser.h" />
-    <ClInclude Include="Tokenaizer.h" />
-    <ClInclude Include="Zoner.h" />
+    <ClInclude Include="Layers.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
