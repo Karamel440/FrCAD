@@ -10,6 +10,16 @@
 
 FrEntity::~FrEntity() = default;
 
+void FrEntity::erase() {
+    AcDbObjectPointer<AcDbEntity> entity(id_, AcDb::kForWrite);
+
+    if (entity.openStatus() != Acad::eOk)
+        throw FrException{L"Не удалось открыть объект для удаления"};
+
+    if (entity->erase() != Acad::eOk)
+        throw FrException{L"Не удалось удалить объект"};
+}
+
 void FrEntity::setLayer(const FrLayer& layer)
 {
 	if (ent_) {

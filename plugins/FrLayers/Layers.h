@@ -1,8 +1,8 @@
 #pragma once
 
 void FrLayersOnAll();
-void cmd_FrLayersIsolate();
+void FrLayersIsolate();
 void FrLayersOffSelected();
 void FrLayersOffUnder();
-void cmd_FrLayersOnCabels();
-void cmd_FrLayersOnWells();
+void FrLayersOnCabels();
+void FrLayersOnWells();

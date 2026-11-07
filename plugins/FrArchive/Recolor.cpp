@@ -1,4 +1,7 @@
 #include "Recolor.h"
+#include <filesystem>
+#include <optional>
+#include <vector>
 #include <FrDatabase.h>
 #include <FrEntity.h>
 #include <FrPolyline.h>
@@ -17,62 +20,18 @@ std::vector<fs::path> checkFiles(const std::vector<fs::path>& files) {
 	for (const auto& file : files) {
 		
 		try {
-			auto db = cad::db::read(file.c_str());
+			FrDatabase db{ file };
 		}
-		catch (cad::core::Exception&) {
+		catch (const FrException&) {
 			failed.push_back(file);
 		}
 	}
 	return failed;
 }
 
-CAD_COMMAND(FrRecolorArchive) {
-	namespace fs = std::filesystem;
+void FrArchiveMakeArchive() {
 
-	fs::path archiveFolder = cad::ed::folder();
-	std::vector<fs::path> dwgForRecolor;
-
-	for (const auto& entry : fs::recursive_directory_iterator(archiveFolder)) {
-		
-		if (!entry.is_regular_file() 
-			|| entry.path().extension() != L".dwg"
-			|| entry.path().stem().wstring().length() != 8) 
-			continue;
-
-		dwgForRecolor.push_back(entry.path());
-	}
-
-	std::vector<fs::path>failedDwg;
-
-	for (const auto& dwg : dwgForRecolor) {
-		try {
-			auto newDb = cad::db::read(dwg.c_str());
-			
-			cad::db::recolor(255, newDb.get());
-
-			fs::path recoloredName = archiveFolder / (dwg.stem().wstring() + L" белый" + dwg.extension().wstring());
-			cad::db::saveAs(newDb, recoloredName);
-		}
-		catch (const cad::core::Exception&) {
-			failedDwg.push_back(dwg);
-		}
-		
-		if (!failedDwg.empty()) {
-			std::wstring message = L"Файлы,которые не удалось покрасить:\n\n";
-
-			for (const auto& dwg : failedDwg) {
-				message += dwg.filename().wstring();
-				message += L"\n";
-			}
-			cad::out::alert(message);
-		}
-
-	}
-}
-
-CAD_COMMAND(FrArchiveMakeArchive) {
-
-	auto path = cad::ed::folder(L"Выберете папку архива");
+	auto path = FrSelectFolder(L"Выберете папку архива");
 
 	fs::path selectedFolder{ path };
 
@@ -99,7 +58,7 @@ CAD_COMMAND(FrArchiveMakeArchive) {
 			message += L"\n";
 			message += file.filename().stem().wstring();
 		}
-		cad::out::alert(message);
+		FrAlert(message);
 		return;
 	}
 
@@ -111,7 +70,7 @@ CAD_COMMAND(FrArchiveMakeArchive) {
 			continue;
 
 		if (boundaryFile) {
-			cad::out::alert
+			FrAlert
 			(
 				L"В папке найдено несколько DWG-файлов границ. "
 				L"Будет использован первый найденный файл."
@@ -121,44 +80,35 @@ CAD_COMMAND(FrArchiveMakeArchive) {
 			boundaryFile = entry.path();
 	}
 		
-	auto archiveDwg = std::make_unique<AcDbDatabase> (true,true);
+	FrDatabase archiveDwg;
 
-	for (auto& dwg : dwgsForJoin) {;
-	
-	auto tempDwg = cad::db::create();
-	
-	auto file = cad::db::read(dwg.c_str());
-	
-	auto ids = cad::db::entities<AcDbObject>(file);
-
-	cad::ops::clone(ids, archiveDwg.get(),file.get());
+	for (const auto& dwg : dwgsForJoin) {
+		FrDatabase file{ dwg };
+		auto entities = file.entities<FrEntity>();
+		if (!entities.empty())
+			archiveDwg.clone(entities);
 	}
 
 	if (boundaryFile) {
-		auto temp = cad::db::create();
+		FrDatabase boundary{ *boundaryFile };
+		auto lines = boundary.entities<FrPolyline>();
+		if (!lines.empty()) {
+			auto layer = archiveDwg.layer(L"18_Зарамочное оформление");
+			if (!layer)
+				layer = archiveDwg.createLayer(L"18_Зарамочное оформление");
 
-		auto tempFile = cad::db::read(boundaryFile.value().c_str());
-
-		auto ids = cad::db::entities<AcDbPolyline>(temp);
-
-		auto plineIds = cad::ops::clone(ids, archiveDwg.get());
-
-		auto layerId = cad::db::layer(temp, L"18_Зарамочное оформление");
-
-		cad::ops::setLayer(ids, layerId);
-
-		for (const auto& id : plineIds) {
-			auto pline = cad::db::open<AcDbPolyline>(id, AcDb::kForWrite);
-			pline->setColorIndex(2);
-			pline->setLinetype(L"M5_004_A");
-			pline->setLineWeight(AcDb::kLnWt040);
+			for (auto& line : archiveDwg.clone(lines)) {
+				line.setLayer(*layer);
+				line.setColor(2);
+				line.setLineWeight(AcDb::kLnWt040);
+				AcDbObjectPointer<AcDbEntity> entity{ line.id(), AcDb::kForWrite };
+				FrCheckStatus(entity.openStatus(), L"Не удалось открыть полилинию границы");
+				entity->setLinetype(L"M5_004_A");
+			}
 		}
 	}
 
-	fs::path outputPath =
-		selectedFolder / L"архив.dwg";
-
-	cad::db::saveAs(archiveDwg.get(), outputPath);
+	archiveDwg.saveAs(selectedFolder / L"архив.dwg");
 }
 
 void FrArchiveMake() {

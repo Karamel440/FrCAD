@@ -50,10 +50,10 @@ inline Minimum minimumAssignment(const CostMatrix& cost) {
             double step = forbidden;
             std::size_t next = 0;
             for (std::size_t j = 1; j <= columns; ++j) {
-                if (visited[j])
-                    continue;
-                const double reduced = cost[currentRow - 1][j - 1]
-                    - rowPotential[currentRow] - columnPotential[j];
+                if (visited[j]) continue;
+                const double reduced = cost[currentRow - 1][j - 1] -
+                                       rowPotential[currentRow] -
+                                       columnPotential[j];
                 if (reduced < slack[j]) {
                     slack[j] = reduced;
                     previous[j] = column;
@@ -63,8 +63,7 @@ inline Minimum minimumAssignment(const CostMatrix& cost) {
                     next = j;
                 }
             }
-            if (next == 0)
-                return {{}, forbidden};
+            if (next == 0) return {{}, forbidden};
             for (std::size_t j = 0; j <= columns; ++j) {
                 if (visited[j]) {
                     rowPotential[owner[j]] += step;
@@ -94,10 +93,12 @@ inline Minimum minimumAssignment(const CostMatrix& cost) {
     return result;
 }
 
-inline void assignComponent(const Indices& wells, const Indices& labels,
-    const Indices& localLabel, const std::vector<std::vector<Candidate>>& candidates,
+inline void assignComponent(
+    const Indices& wells, const Indices& labels, const Indices& localLabel,
+    const std::vector<std::vector<Candidate>>& candidates,
     std::vector<Assignment>& result) {
-    CostMatrix cost(wells.size(), std::vector<double>(labels.size() + wells.size(), forbidden));
+    CostMatrix cost(wells.size(), std::vector<double>(
+                                      labels.size() + wells.size(), forbidden));
     for (std::size_t row = 0; row < wells.size(); ++row) {
         for (const auto& candidate : candidates[wells[row]])
             cost[row][localLabel[candidate.label]] = candidate.distance;
@@ -120,9 +121,10 @@ inline void assignComponent(const Indices& wells, const Indices& labels,
     }
 }
 
-} // namespace detail
+}  // namespace detail
 
-inline std::vector<Assignment> solve(const std::vector<std::vector<Candidate>>& candidates,
+inline std::vector<Assignment> solve(
+    const std::vector<std::vector<Candidate>>& candidates,
     std::size_t labelCount) {
     std::vector<Assignment> result(candidates.size());
     std::vector<detail::Indices> wellsForLabel(labelCount);
@@ -133,16 +135,14 @@ inline std::vector<Assignment> solve(const std::vector<std::vector<Candidate>>& 
     std::vector<bool> seenWell(candidates.size()), seenLabel(labelCount);
     detail::Indices localLabel(labelCount);
     for (std::size_t start = 0; start < candidates.size(); ++start) {
-        if (seenWell[start] || candidates[start].empty())
-            continue;
+        if (seenWell[start] || candidates[start].empty()) continue;
         detail::Indices wells{start}, labels;
         seenWell[start] = true;
         // Grow just the group of wells that compete for the same labels.
         for (std::size_t i = 0; i < wells.size(); ++i) {
             for (const auto& candidate : candidates[wells[i]]) {
                 const auto label = candidate.label;
-                if (seenLabel[label])
-                    continue;
+                if (seenLabel[label]) continue;
                 seenLabel[label] = true;
                 localLabel[label] = labels.size();
                 labels.push_back(label);
@@ -159,4 +159,4 @@ inline std::vector<Assignment> solve(const std::vector<std::vector<Candidate>>& 
     return result;
 }
 
-} // namespace well_assignment
+}  // namespace well_assignment

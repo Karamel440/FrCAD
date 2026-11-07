@@ -2,10 +2,11 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <FrRoot Condition="'$(FrRoot)' == ''">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..'))</FrRoot>
-    <FrSdkRoot Condition="'$(FrSdkRoot)' == ''">D:\Macro\SDKs\Fr</FrSdkRoot>
+    <FrMacroRoot Condition="'$(FrMacroRoot)' == ''">D:\Macro</FrMacroRoot>
+    <FrSdkRoot Condition="'$(FrSdkRoot)' == ''">$(FrMacroRoot)\SDKs\Fr</FrSdkRoot>
     <FrIncludeDir Condition="'$(FrIncludeDir)' == ''">$(FrSdkRoot)\inc</FrIncludeDir>
     <FrLibraryDir Condition="'$(FrLibraryDir)' == ''">$(FrSdkRoot)\lib</FrLibraryDir>
-    <FrObjectArxRoot Condition="'$(FrObjectArxRoot)' == ''">D:\Macro\SDKs\ObjectARX\2026</FrObjectArxRoot>
+    <FrObjectArxRoot Condition="'$(FrObjectArxRoot)' == ''">$(FrMacroRoot)\SDKs\ObjectARX\2026</FrObjectArxRoot>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
 

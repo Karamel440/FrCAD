@@ -1,5 +1,6 @@
 #pragma once
-#include <cad.h>
+#include <filesystem>
+#include <string>
 
 std::wstring getCorePath();
 bool loadFrPlugins(const std::wstring& pathToFrCore);

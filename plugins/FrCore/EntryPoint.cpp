@@ -1,62 +1,48 @@
 #include <aced.h>
 #include <rxregsvc.h>
-#include "blocks.h"
+#include <Windows.h>
+#include <FrCommands.h>
+
 #include "Plugins.h"
 
-extern "C" AcRx::AppRetCode
-acrxEntryPoint(AcRx::AppMsgCode msg, void* pkt) {
-	switch (msg) {
-	case AcRx::kInitAppMsg: {
-		 
-		acrxDynamicLinker->unlockApplication(pkt);
-		acrxRegisterAppMDIAware(pkt);
+extern "C" AcRx::AppRetCode acrxEntryPoint(AcRx::AppMsgCode msg, void* pkt) {
+    switch (msg) {
+        case AcRx::kInitAppMsg: {
+            acrxDynamicLinker->unlockApplication(pkt);
+            acrxRegisterAppMDIAware(pkt);
 
-		acedRegCmds->addCommand(
-			L"COREGROUP",
-			L"FRBLOCKIMPORTALL",
-			L"FRBLOCKIMPORTALL",
-			ACRX_CMD_MODAL 
-			/* | ACRX_CMD_SESSION*/,
-			cmd_FrBlockImportAll);
-		
-		acutPrintf(L"\nFrCore loaded");
+            acutPrintf(L"\nFrCore loaded");
 
-		try {
-			const std::wstring corePath = getCorePath();
+            try {
+                const std::wstring corePath = getCorePath();
 
-			SetDllDirectoryW(corePath.c_str());
+                SetDllDirectoryW(std::filesystem::path{ corePath }.parent_path().c_str());
 
-			if (!loadFrPlugins(corePath)) {
-				cad::out::println(L"Failed to load one or more Fr plugins");
-			}
-		}
-		catch (const cad::core::Exception& ex) {
-			cad::out::println(
-				L"Failed to initialize plugin system: "
-				+ std::wstring{ ex.where() }
-			);
-			SetDllDirectoryW(nullptr);
-		}
-		catch (...) {
-			cad::out::println(
-				L"Failed to initialize plugin system: unknown error"
-			);
-			SetDllDirectoryW(nullptr);
-		}
-		SetDllDirectoryW(nullptr);
+                if (!loadFrPlugins(corePath)) {
+                    FrPrint(L"Failed to load one or more Fr plugins");
+                }
+            } catch (const FrException& ex) {
+                FrPrint(L"Failed to initialize plugin system: " +
+                                  ex.message());
+                SetDllDirectoryW(nullptr);
+            } catch (...) {
+                FrPrint(
+                    L"Failed to initialize plugin system: unknown error");
+                SetDllDirectoryW(nullptr);
+            }
+            SetDllDirectoryW(nullptr);
 
-		break;
-	}
-	case AcRx::kUnloadAppMsg: {
-		unloadFrPlugins();
+            break;
+        }
+        case AcRx::kUnloadAppMsg: {
+            unloadFrPlugins();
 
-		acedRegCmds->removeGroup(L"COREGROUP");
+            acedRegCmds->removeGroup(L"COREGROUP");
 
-		cad::out::println(L"\nFrCore unloaded");
-		break;
-	}
-	}
+            FrPrint(L"\nFrCore unloaded");
+            break;
+        }
+    }
 
-	
-	return AcRx::kRetOK;
+    return AcRx::kRetOK;
 }

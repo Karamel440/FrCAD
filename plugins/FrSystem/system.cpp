@@ -1,94 +1,169 @@
 #include "system.h"
 
-void setFrStandardVars()
-{
-    cad::sys::set(L"INSUNITS", 6);        // meters
+#include <FrExceptions.h>
+#include <FrOutput.h>
+#include <acutmem.h>
+#include <adscodes.h>
+#include <dbapserv.h>
+#include <dbents.h>
+#include <dbobjptr.h>
+#include <sorttab.h>
+#include <cwchar>
+#include <memory>
 
-    cad::sys::set(L"CMDECHO", 0);
-    cad::sys::set(L"FILEDIA", 1);
-    cad::sys::set(L"CMDDIA", 1);
-    cad::sys::set(L"PROXYNOTICE", 1);
-
-    cad::sys::set(L"PICKFIRST", 1);
-    cad::sys::set(L"PICKADD", 2);
-
-    cad::sys::set(L"LTSCALE", 1.0);
-    cad::sys::set(L"CELTSCALE", 1.0);
-    cad::sys::set(L"PSLTSCALE", 1);
-    cad::sys::set(L"MSLTSCALE", 1);
-
-    cad::sys::set(L"CLAYER", L"0");
-    cad::sys::set(L"CELTYPE", L"Continuous");
-    cad::sys::set(L"CECOLOR", L"7");
-    cad::sys::set(L"CELWEIGHT", 20);
-    cad::sys::set(L"TEXTSTYLE", L"Standard");
-
-    cad::out::println(L"Стандартные системные переменные выставлены");
-}
-
-CAD_COMMAND(FrSystemClearAll)
-{
-    cad::sys::QuietGuard quiet;
-    cad::sys::PropsGuard props;
-
-    auto db = cad::db::current();
-
-    for (int pass = 0; pass < 3; ++pass) {
-        AcDbObjectIdArray ids;
-
-        cad::db::collectBlockRecords(db.get(), ids);
-
-        cad::db::collectRecords<AcDbLayerTable>(
-            db.get(),
-            &AcDbDatabase::getLayerTable,
-            ids
-        );
-
-
-        cad::db::collectRecords<AcDbLinetypeTable>(
-            db.get(),
-            &AcDbDatabase::getLinetypeTable,
-            ids
-        );
-
-        cad::db::collectRecords<AcDbTextStyleTable>(
-            db.get(),
-            &AcDbDatabase::getTextStyleTable,
-            ids
-        );
-
-        cad::db::collectRecords<AcDbDimStyleTable>(
-            db.get(),
-            &AcDbDatabase::getDimStyleTable,
-            ids
-        );
-
-        cad::db::collectRecords<AcDbRegAppTable>(
-            db.get(),
-            &AcDbDatabase::getRegAppTable,
-            ids
-        );
-
-        if (ids.isEmpty())
-            break;
-
-        Acad::ErrorStatus es = db->purge(ids);
-
-        if (es != Acad::eOk) {
-            throw cad::core::Exception(
-                cad::core::ErrorType::AcadError,
-                L"FrClearAll",
-                es
-            );
-        }
-
-        if (ids.isEmpty())
-            break;
-
-        cad::ops::tryErase(ids);
+namespace {
+    resbuf systemValue(int value) {
+        resbuf result{};
+        result.restype = RTSHORT;
+        result.resval.rint = static_cast<short>(value);
+        return result;
     }
 
-    cad::out::println(L"Очистка завершена");
+    resbuf systemValue(double value) {
+        resbuf result{};
+        result.restype = RTREAL;
+        result.resval.rreal = value;
+        return result;
+    }
+
+    resbuf systemValue(const ACHAR* value) {
+        resbuf result{};
+        result.restype = RTSTR;
+        result.resval.rstring = const_cast<ACHAR*>(value);
+        return result;
+    }
+
+    void setSystemVar(const ACHAR* name, const resbuf& value) {
+        if (acedSetVar(name, &value) != RTNORM)
+            throw FrException{ L"Не удалось установить " + std::wstring{ name } };
+    }
+
+    template <typename T>
+    void setSystemVar(const ACHAR* name, T value) {
+        setSystemVar(name, systemValue(value));
+    }
+
+    class ScopedSystemVar {
+        const ACHAR* name_;
+        resbuf previous_{};
+
+    public:
+        ScopedSystemVar(const ACHAR* name, const resbuf& value) : name_(name) {
+            if (acedGetVar(name_, &previous_) != RTNORM)
+                throw FrException{ L"Не удалось прочитать " + std::wstring{ name_ } };
+
+            if (acedSetVar(name_, &value) != RTNORM) {
+                if (previous_.restype == RTSTR)
+                    acutDelString(previous_.resval.rstring);
+                throw FrException{ L"Не удалось установить " + std::wstring{ name_ } };
+            }
+        }
+
+        ~ScopedSystemVar() {
+            acedSetVar(name_, &previous_);
+            if (previous_.restype == RTSTR)
+                acutDelString(previous_.resval.rstring);
+        }
+
+        ScopedSystemVar(const ScopedSystemVar&) = delete;
+        ScopedSystemVar& operator=(const ScopedSystemVar&) = delete;
+    };
+
+    AcDbDatabase& currentDatabase() {
+        auto* db = acdbHostApplicationServices()->workingDatabase();
+        if (!db)
+            throw FrException{ L"Нет активного чертежа" };
+        return *db;
+    }
+
+    void collectRecords(AcDbObjectId tableId, AcDbObjectIdArray& ids, bool isBlockTable = false) {
+        AcDbObjectPointer<AcDbSymbolTable> table{ tableId, AcDb::kForRead };
+        FrCheckStatus(table.openStatus(), L"Не удалось открыть таблицу чертежа");
+
+        AcDbSymbolTableIterator* raw = nullptr;
+        const auto status = table->newIterator(raw);
+        std::unique_ptr<AcDbSymbolTableIterator> records{ raw };
+        FrCheckStatus(status, L"Не удалось получить записи таблицы");
+
+        for (; !records->done(); records->step()) {
+            AcDbObjectId id;
+            if (records->getRecordId(id) != Acad::eOk || id.isNull())
+                continue;
+            if (isBlockTable) {
+                AcDbObjectPointer<AcDbBlockTableRecord> block{ id, AcDb::kForRead };
+                if (block.openStatus() != Acad::eOk || block->isLayout() ||
+                    block->isFromExternalReference() || block->isDependent())
+                    continue;
+            }
+            ids.append(id);
+        }
+    }
+}
+
+
+void setFrStandardVars()
+{
+    setSystemVar(L"INSUNITS", 6);        // meters
+
+    setSystemVar(L"CMDECHO", 0);
+    setSystemVar(L"FILEDIA", 1);
+    setSystemVar(L"CMDDIA", 1);
+    setSystemVar(L"PROXYNOTICE", 1);
+
+    setSystemVar(L"PICKFIRST", 1);
+    setSystemVar(L"PICKADD", 2);
+
+    setSystemVar(L"LTSCALE", 1.0);
+    setSystemVar(L"CELTSCALE", 1.0);
+    setSystemVar(L"PSLTSCALE", 1);
+    setSystemVar(L"MSLTSCALE", 1);
+
+    setSystemVar(L"CLAYER", L"0");
+    setSystemVar(L"CELTYPE", L"Continuous");
+    setSystemVar(L"CECOLOR", L"7");
+    setSystemVar(L"CELWEIGHT", 20);
+    setSystemVar(L"TEXTSTYLE", L"Standard");
+
+    FrPrint(L"Стандартные системные переменные выставлены");
+}
+
+void FrSystemClearAll()
+{
+    ScopedSystemVar cmdecho{ L"CMDECHO", systemValue(0) };
+    ScopedSystemVar filedia{ L"FILEDIA", systemValue(0) };
+    ScopedSystemVar cmddia{ L"CMDDIA", systemValue(0) };
+    ScopedSystemVar proxyNotice{ L"PROXYNOTICE", systemValue(0) };
+    ScopedSystemVar layer{ L"CLAYER", systemValue(L"0") };
+    ScopedSystemVar linetype{ L"CELTYPE", systemValue(L"Continuous") };
+    ScopedSystemVar lineweight{ L"CELWEIGHT", systemValue(20) };
+    ScopedSystemVar color{ L"CECOLOR", systemValue(L"7") };
+    ScopedSystemVar style{ L"TEXTSTYLE", systemValue(L"Standard") };
+
+    auto& db = currentDatabase();
+    for (int pass = 0; pass < 3; ++pass) {
+        AcDbObjectIdArray ids;
+        collectRecords(db.blockTableId(), ids, true);
+        collectRecords(db.layerTableId(), ids);
+        collectRecords(db.linetypeTableId(), ids);
+        collectRecords(db.textStyleTableId(), ids);
+        collectRecords(db.dimStyleTableId(), ids);
+        collectRecords(db.regAppTableId(), ids);
+
+        if (ids.isEmpty())
+            break;
+
+        FrCheckStatus(db.purge(ids), L"FrSystemClearAll: не удалось очистить чертёж");
+        if (ids.isEmpty())
+            break;
+
+        for (const auto& id : ids) {
+            AcDbObjectPointer<AcDbObject> object{ id, AcDb::kForWrite };
+            if (object.openStatus() == Acad::eOk)
+                object->erase();
+        }
+    }
+
+    FrPrint(L"Очистка завершена");
 }
 
  int layerNumber(const ACHAR* name) noexcept {
@@ -153,10 +228,10 @@ CAD_COMMAND(FrSystemClearAll)
          if (!block)
              return false;
 
-         auto blockRecord =
-             cad::db::open<AcDbBlockTableRecord>(
-                 block->blockTableRecord()
-             );
+         AcDbObjectPointer<AcDbBlockTableRecord> blockRecord{
+             block->blockTableRecord(), AcDb::kForRead
+         };
+         FrCheckStatus(blockRecord.openStatus(), L"FrSystemSort: block record");
 
          AcString blockName;
 
@@ -164,11 +239,7 @@ CAD_COMMAND(FrSystemClearAll)
              blockRecord->getName(blockName);
 
          if (es != Acad::eOk) {
-             throw cad::core::Exception(
-                 cad::core::ErrorType::AcadError,
-                 L"FrSystemSort: block name",
-                 es
-             );
+             throw FrException{ L"FrSystemSort: block name", es };
          }
 
          return sameText(blockName.kACharPtr(), L"M2_075") ||
@@ -197,13 +268,12 @@ CAD_COMMAND(FrSystemClearAll)
 
  }
 
- CAD_COMMAND(FrSystemSort) {
-     auto db = cad::db::current();
-
-     auto currentSpace =
-         cad::db::open<AcDbBlockTableRecord>(
-             db->currentSpaceId()
-         );
+ void FrSystemSort() {
+     auto& db = currentDatabase();
+     AcDbObjectPointer<AcDbBlockTableRecord> currentSpace{
+         db.currentSpaceId(), AcDb::kForRead
+     };
+     FrCheckStatus(currentSpace.openStatus(), L"FrSystemSort: current space");
 
      AcDbObjectIdArray entityIds;
 
@@ -215,11 +285,7 @@ CAD_COMMAND(FrSystemClearAll)
      if (es != Acad::eOk || !iterator) {
          delete iterator;
 
-         throw cad::core::Exception(
-             cad::core::ErrorType::AcadError,
-             L"FrSystemSort: current space iterator",
-             es
-         );
+         throw FrException{ L"FrSystemSort: current space iterator", es };
      }
 
      for (
@@ -252,7 +318,8 @@ CAD_COMMAND(FrSystemClearAll)
      AcDbObjectIdArray images;
 
      for (const AcDbObjectId& id : entityIds) {
-         auto entity = cad::db::open<AcDbEntity>(id);
+         AcDbObjectPointer<AcDbEntity> entity{ id, AcDb::kForRead };
+         FrCheckStatus(entity.openStatus(), L"FrSystemSort: open entity");
 
          const AcRxClass* entityClass = entity->isA();
 
@@ -296,18 +363,11 @@ CAD_COMMAND(FrSystemClearAll)
      );
 
      if (es != Acad::eOk) {
-         throw cad::core::Exception(
-             cad::core::ErrorType::AcadError,
-             L"FrSystemSort: getSortentsTable",
-             es
-         );
+         throw FrException{ L"FrSystemSort: getSortentsTable", es };
      }
 
      if (!sortTable) {
-         throw cad::core::Exception(
-             cad::core::ErrorType::NullPointer,
-             L"FrSystemSort: sortTable"
-         );
+         throw FrException{ L"FrSystemSort: sortTable" };
      }
 
      // Точная последовательность старого KSORT.
@@ -343,22 +403,14 @@ CAD_COMMAND(FrSystemClearAll)
          sortTable->close();
 
      if (es != Acad::eOk) {
-         throw cad::core::Exception(
-             cad::core::ErrorType::AcadError,
-             L"FrSystemSort: changing draw order",
-             es
-         );
+         throw FrException{ L"FrSystemSort: changing draw order", es };
      }
 
      if (closeStatus != Acad::eOk) {
-         throw cad::core::Exception(
-             cad::core::ErrorType::AcadError,
-             L"FrSystemSort: close sort table",
-             closeStatus
-         );
+         throw FrException{ L"FrSystemSort: close sort table", closeStatus };
      }
 
-     cad::out::println(
+     FrPrint(
          L"FrSystemSort: порядок отрисовки установлен."
      );
  }

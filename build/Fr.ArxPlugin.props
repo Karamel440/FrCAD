@@ -2,6 +2,8 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TargetExt>.arx</TargetExt>
+    <FrArxDeployDir Condition="'$(FrArxDeployDir)' == ''">$(FrMacroRoot)\Auto\Картография\Общие\arx</FrArxDeployDir>
+    <FrArxDevDeployDir Condition="'$(FrArxDevDeployDir)' == ''">$(FrMacroRoot)\Auto\CAD\dev\arx</FrArxDevDeployDir>
   </PropertyGroup>
 
   <ItemDefinitionGroup>

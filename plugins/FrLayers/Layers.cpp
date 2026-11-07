@@ -1,32 +1,16 @@
-#include "cad.h"
+#include "Layers.h"
 #include <FrDatabase.h>
 #include <FrSelection.h>
-#include <FrEntity.h>
-#include <cwchar>
+#include <adscodes.h>
+#include <cwctype>
+#include <string_view>
 
-static AcDbObjectIdArray getLayers() {
-    auto db = cad::db::current();
-    AcDbObjectIdArray layers;
-
-    cad::db::collectRecords<AcDbLayerTable>(
-        db.get(),
-        &AcDbDatabase::getLayerTable,
-        layers
-    );
-
-    return layers;
-}
-
-static int getPrefix(const AcString& name) {
-    const ACHAR* text = name.kACharPtr();
-
-    if (text[0] < L'0' || text[0] > L'9')
+static int getPrefix(std::wstring_view name) {
+    if (name.size() < 2 || name[0] < L'0' || name[0] > L'9' ||
+        name[1] < L'0' || name[1] > L'9')
         return -1;
 
-    if (text[1] < L'0' || text[1] > L'9')
-        return -1;
-
-    return (text[0] - L'0') * 10 + (text[1] - L'0');
+    return (name[0] - L'0') * 10 + (name[1] - L'0');
 }
 
 static bool isBaseLayer(int prefix) {
@@ -47,26 +31,26 @@ void FrLayersOnAll() {
     }
 }
 
-CAD_COMMAND(FrLayersIsolate) {
-    auto entity = cad::db::open<AcDbEntity>(
-        cad::ed::select()
-    );
+void FrLayersIsolate() {
+    ads_name entity;
+    ads_point point;
+    const int status = acedEntSel(L"\nВыберите объект: ", entity, point);
+    if (status == RTCAN)
+        throw FrCancel{};
+    if (status != RTNORM)
+        throw FrException{ L"Не удалось выбрать объект" };
 
-    AcDbObjectId selectedLayer = entity->layerId();
-    AcDbObjectIdArray layers = getLayers();
+    AcDbObjectId id;
+    FrCheckStatus(acdbGetObjectId(id, entity), L"Не удалось получить ID объекта");
+    const auto selectedLayer = FrEntity{ id }.layer().name();
 
-    for (const AcDbObjectId& id : layers) {
-        auto layer = cad::db::open<AcDbLayerTableRecord>(
-            id,
-            AcDb::kForWrite
-        );
-        
-        AcString name;
-        layer->getName(name);
-
-        if (std::wcschr(name.kACharPtr(), L'|'))
+    for (const auto& layer : FrDbCurrent().layers()) {
+        if (layer.isReference())
             continue;
-        layer->setIsOff(id != selectedLayer);
+        if (layer.name() == selectedLayer)
+            layer.on();
+        else
+            layer.off();
     }
 }
 
@@ -116,45 +100,27 @@ void FrLayersOffUnder() {
     }
 } 
 
-CAD_COMMAND(FrLayersOnCabels) {
-    AcDbObjectIdArray layers = getLayers();
-
-    for (const AcDbObjectId& id : layers) {
-        auto layer = cad::db::open<AcDbLayerTableRecord>(
-            id,
-            AcDb::kForWrite
-        );
-
-        AcString name;
-        layer->getName(name);
-
-        if (std::wcschr(name.kACharPtr(), L'|'))
+void FrLayersOnCabels() {
+    for (const auto& layer : FrDbCurrent().layers()) {
+        if (layer.isReference())
             continue;
-
-        layer->setIsOff(!isBaseLayer(getPrefix(name)));
+        if (isBaseLayer(getPrefix(layer.name())))
+            layer.on();
+        else
+            layer.off();
     }
 }
 
-CAD_COMMAND(FrLayersOnWells) {
-    AcDbObjectIdArray layers = getLayers();
-
-    for (const auto& id : layers) {
-        auto layer = cad::db::open<AcDbLayerTableRecord>(id, AcDb::kForWrite);
-
-        AcString layerName;
-        layer->getName(layerName);
-
-        if (std::wcschr(layerName.kACharPtr(),L'|'))
+void FrLayersOnWells() {
+    for (const auto& layer : FrDbCurrent().layers()) {
+        if (layer.isReference())
             continue;
 
-       int prefix = getPrefix(layerName);
-
-        bool onLayers =
-            prefix == 44 ||
-            prefix == 45 ||
-            prefix == 18 ||
-            prefix == 02 ||
-            layerName == L"0";
-        layer->setIsOff(!onLayers);
+        const auto name = layer.name();
+        const int prefix = getPrefix(name);
+        if (prefix == 44 || prefix == 45 || prefix == 18 || prefix == 2 || name == L"0")
+            layer.on();
+        else
+            layer.off();
     }
 }

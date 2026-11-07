@@ -31,6 +31,8 @@ protected:
 public:
 	virtual ~FrEntity();
 
+	void erase();
+
 	explicit FrEntity(AcDbObjectId id) : FrObject(id) {}
 
 	using NativeType = AcDbEntity;

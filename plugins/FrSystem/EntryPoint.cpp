@@ -1,5 +1,6 @@
 #include <aced.h>
 #include <rxregsvc.h>
+#include <FrCommands.h>
 #include "system.h"
 
 extern "C" AcRx::AppRetCode
@@ -14,7 +15,7 @@ acrxEntryPoint(AcRx::AppMsgCode msg, void* pkt) {
             L"FrSystemClearAll",
             L"FrSystemClearAll",
             ACRX_CMD_MODAL,
-            cmd_FrSystemClearAll
+            &FrCommand<FrSystemClearAll>
         );
 
         acedRegCmds->addCommand(
@@ -22,7 +23,7 @@ acrxEntryPoint(AcRx::AppMsgCode msg, void* pkt) {
             L"FrSystemSort",
             L"FrSystemSort",
             ACRX_CMD_MODAL,
-            cmd_FrSystemSort
+            &FrCommand<FrSystemSort>
         );
 
         acedRegCmds->addCommand(
@@ -30,7 +31,7 @@ acrxEntryPoint(AcRx::AppMsgCode msg, void* pkt) {
             L"setFrStandardVars",
             L"setFrStandardVars",
             ACRX_CMD_MODAL,
-            setFrStandardVars
+            &FrCommand<setFrStandardVars>
         );
 
         acutPrintf(L"\nPlugin FrSystem loaded");

@@ -1,31 +1,16 @@
 #include "Plugins.h"
 
+#include <aced.h>
+#include <rxregsvc.h>
+#include <vector>
+#include <FrUtils.h>
+
 namespace fs = std::filesystem;
 
 std::vector<std::filesystem::path> loadedFrPlugins;
 
-std::wstring getCorePath()  {
-
-	HMODULE module = nullptr;
-	wchar_t buffer[1024];
-
-	BOOL success = GetModuleHandleExW(
-		GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-		L"FrCore.arx",
-		&module
-	);
-
-	if (!success)
-		throw cad::core::Exception(L"FrCore.arx not found");
-
-	DWORD length = GetModuleFileNameW(
-		module,
-		buffer,
-		1024
-	);
-
-	return std::wstring{ buffer, length };
-
+std::wstring getCorePath() {
+    return currentPluginPath().wstring();
 }
 
 bool isFrPlugin(const std::filesystem::path& path) {

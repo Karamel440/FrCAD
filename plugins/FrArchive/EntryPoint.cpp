@@ -14,7 +14,7 @@ acrxEntryPoint(AcRx::AppMsgCode msg, void* pkt) {
             L"FrArchiveRecolor", ACRX_CMD_MODAL, &FrCommand<FrArchiveRecolor>);
 
         acedRegCmds->addCommand(L"ARCHIVEGROUP", L"FrArchiveMakeArchive",
-            L"FrArchiveMakeArchive", ACRX_CMD_MODAL, cmd_FrArchiveMakeArchive);
+            L"FrArchiveMakeArchive", ACRX_CMD_MODAL, &FrCommand<FrArchiveMakeArchive>);
 
         acedRegCmds->addCommand(L"ARCHIVEGROUP", L"FrArchiveMake",
             L"FrArchiveMake", ACRX_CMD_MODAL, &FrCommand<FrArchiveMake>);

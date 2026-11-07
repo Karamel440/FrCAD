@@ -1,48 +1,19 @@
-BasedOnStyle: LLVM
-Language: Cpp
 
-# Отступы — четыре пробела
+BasedOnStyle: Google
+Language: Cpp
+Standard: c++20
+
 IndentWidth: 4
-ContinuationIndentWidth: 4
 TabWidth: 4
 UseTab: Never
 
-# Перенос длинных строк
-ColumnLimit: 100
+ColumnLimit: 80
 
-# Открывающая скобка остаётся на той же строке
-BreakBeforeBraces: Custom
-BraceWrapping:
-  AfterFunction: false
-  AfterControlStatement: Never
-  AfterClass: false
-  AfterStruct: false
-  AfterEnum: false
-  BeforeElse: true
-  BeforeCatch: true
-  IndentBraces: false
-
-# Короткие блоки тоже оформляются в несколько строк
-AllowShortFunctionsOnASingleLine: None
-AllowShortIfStatementsOnASingleLine: Never
-AllowShortLoopsOnASingleLine: false
-AllowShortBlocksOnASingleLine: Never
-AllowShortLambdasOnASingleLine: None
-
-# Пробелы: if (condition), function(argument), array[index]
-SpaceBeforeParens: ControlStatements
-SpacesInParentheses: false
-SpacesInSquareBrackets: false
-
-# Ссылки и указатели: const Zone& zone, Zone* zone
-DerivePointerAlignment: false
 PointerAlignment: Left
+DerivePointerAlignment: false
 
-# public/private на уровне объявления класса
-AccessModifierOffset: -4
+SpaceBeforeParens: ControlStatements
+SpacesInParens: Never
 
-# Максимум одна пустая строка подряд
-MaxEmptyLinesToKeep: 1
-
-# Сохранять исходный порядок include
-SortIncludes: false
+IndentAccessModifiers: false
+AccessModifierOffset: -2

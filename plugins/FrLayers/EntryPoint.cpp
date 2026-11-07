@@ -23,7 +23,7 @@ acrxEntryPoint(AcRx::AppMsgCode msg, void* pkt) {
             L"FRLAYERSISOLATE",
             L"FrLayersIsolate",
             ACRX_CMD_MODAL,
-            cmd_FrLayersIsolate
+            &FrCommand<FrLayersIsolate>
         );
 
         acedRegCmds->addCommand(
@@ -46,7 +46,7 @@ acrxEntryPoint(AcRx::AppMsgCode msg, void* pkt) {
             L"FrLayersOnCabels",
             L"FrLayersOnCabels",
             ACRX_CMD_MODAL,
-            cmd_FrLayersOnCabels
+            &FrCommand<FrLayersOnCabels>
         );
 
         acedRegCmds->addCommand(
@@ -54,7 +54,7 @@ acrxEntryPoint(AcRx::AppMsgCode msg, void* pkt) {
             L"FrLayersOnWells",
             L"FrLayersOnWells",
             ACRX_CMD_MODAL,
-            cmd_FrLayersOnWells
+            &FrCommand<FrLayersOnWells>
         );
 
         acutPrintf(L"\nPlugin FrLayers loaded");
