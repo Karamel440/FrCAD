@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+  <TemplateData>
+    <Name>Fr ARX Plugin</Name>
+    <Description>Плагин ObjectARX 2026 для AutoCAD. Создайте проект в репозитории Fr, обычно в папке plugins.</Description>
+    <ProjectType>VC</ProjectType>
+    <TemplateID>Fr.VisualStudio.FrArxPlugin</TemplateID>
+    <LanguageTag>cpp</LanguageTag>
+    <PlatformTag>windows</PlatformTag>
+    <ProjectTypeTag>library</ProjectTypeTag>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>FrExamplePlugin</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <LocationField>Enabled</LocationField>
+    <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
+  </TemplateData>
+  <TemplateContent>
+    <Project File="Project.vcxproj" TargetFileName="$safeprojectname$.vcxproj" ReplaceParameters="true">
+      <ProjectItem ReplaceParameters="true" TargetFileName="$safeprojectname$.vcxproj.filters">Project.vcxproj.filters</ProjectItem>
+      <ProjectItem ReplaceParameters="true">EntryPoint.cpp</ProjectItem>
+    </Project>
+  </TemplateContent>
+</VSTemplate>

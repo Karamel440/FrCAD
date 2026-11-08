@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+  <TemplateData>
+    <Name>Fr Static Library</Name>
+    <Description>Статическая библиотека C++ для Fr. Создайте проект в репозитории Fr, обычно в папке src.</Description>
+    <ProjectType>VC</ProjectType>
+    <TemplateID>Fr.VisualStudio.FrStaticLibrary</TemplateID>
+    <LanguageTag>cpp</LanguageTag>
+    <PlatformTag>windows</PlatformTag>
+    <ProjectTypeTag>library</ProjectTypeTag>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>FrExampleLibrary</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <LocationField>Enabled</LocationField>
+    <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
+  </TemplateData>
+  <TemplateContent>
+    <Project File="Project.vcxproj" TargetFileName="$safeprojectname$.vcxproj" ReplaceParameters="true">
+      <ProjectItem ReplaceParameters="true" TargetFileName="$safeprojectname$.vcxproj.filters">Project.vcxproj.filters</ProjectItem>
+      <ProjectItem ReplaceParameters="true">Library.cpp</ProjectItem>
+      <ProjectItem ReplaceParameters="true">Library.h</ProjectItem>
+    </Project>
+  </TemplateContent>
+</VSTemplate>
