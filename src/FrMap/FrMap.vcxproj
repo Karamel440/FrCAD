@@ -44,10 +44,17 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/Zc:preprocessor %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Library.cpp" />
+    <ClCompile Include="FrMap.cpp" />
+    <ClCompile Include="Jigs.cpp" />
     <ClInclude Include="FrMap.h" />
-    <ClInclude Include="Library.h" />
+    <ClInclude Include="Jigs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="RequireFrBuildSettings" BeforeTargets="PrepareForBuild" Condition="'$(FrRoot)' == '' or !Exists('$(FrRoot)\build\Fr.Common.props') or !Exists('$(FrRoot)\build\Fr.CadLibrary.props')">

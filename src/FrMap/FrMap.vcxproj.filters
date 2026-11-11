@@ -9,15 +9,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Library.cpp">
+    <ClCompile Include="FrMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClInclude Include="Library.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClCompile Include="Jigs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FrMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Jigs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

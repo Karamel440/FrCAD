@@ -16,4 +16,8 @@
       <ModuleDefinitionFile>$(FrObjectArxRoot)\inc\AcRxDefault.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
+  <Target Name="FrDeployArx" AfterTargets="Build"
+          Condition="'$(Configuration)|$(Platform)' == 'Release|x64' and '$(TargetExt)' == '.arx'">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(FrArxDeployDir)" SkipUnchangedFiles="true" />
+  </Target>
 </Project>

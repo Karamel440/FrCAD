@@ -8,4 +8,9 @@
       <AdditionalLibraryDirectories>$(FrLibraryDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
+  <Target Name="FrPublishStaticLibrary" AfterTargets="Build"
+          Condition="'$(Configuration)|$(Platform)' == 'Release|x64' and '$(ConfigurationType)' == 'StaticLibrary'">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(FrLibraryDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(ClInclude->'%(FullPath)')" DestinationFolder="$(FrIncludeDir)" SkipUnchangedFiles="true" />
+  </Target>
 </Project>

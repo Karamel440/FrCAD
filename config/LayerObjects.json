@@ -1,0 +1,14 @@
+{
+  "mainSewer": {
+    "layer": "30_Канализация",
+    "color": 12,
+    "lineweight": 0.4,
+    "linetype": "M5_196"
+  },
+  "rainSewer": {
+    "layer": "30_Канализация",
+    "color": 3,
+    "lineweight": 0.4,
+    "linetype": "Continuous"
+  }
+}

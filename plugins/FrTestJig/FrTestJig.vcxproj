@@ -37,6 +37,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="Exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(FrRoot)\build\Fr.Common.props" Condition="'$(FrRoot)' != '' and Exists('$(FrRoot)\build\Fr.Common.props')" />
     <Import Project="$(FrRoot)\build\Fr.ArxPlugin.props" Condition="'$(FrRoot)' != '' and Exists('$(FrRoot)\build\Fr.ArxPlugin.props')" />
+    <Import Project="$(FrRoot)\build\Fr.Libraries.props" Condition="'$(FrRoot)' != '' and Exists('$(FrRoot)\build\Fr.Libraries.props')" />
   </ImportGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)' == 'Debug'">
     <ClCompile>
@@ -49,9 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FrPolylineJig.h" />
+    <ClInclude Include="Main.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <Target Name="RequireFrBuildSettings" BeforeTargets="PrepareForBuild" Condition="'$(FrRoot)' == '' or !Exists('$(FrRoot)\build\Fr.Common.props') or !Exists('$(FrRoot)\build\Fr.ArxPlugin.props')">
+  <Target Name="RequireFrBuildSettings" BeforeTargets="PrepareForBuild" Condition="'$(FrRoot)' == '' or !Exists('$(FrRoot)\build\Fr.Common.props') or !Exists('$(FrRoot)\build\Fr.ArxPlugin.props') or !Exists('$(FrRoot)\build\Fr.Libraries.props')">
     <Error Text="Fr build settings not found. Create this project inside the Fr repository or set FrRoot to the repository directory." />
   </Target>
 </Project>
