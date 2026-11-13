@@ -16,7 +16,12 @@ class FrPolyline : public FrCurve {
 
     using NativeType = AcDbPolyline;
 
-    void addVertex(const AcGePoint3d& point);
+    void addVertex(const AcGePoint3d& point,size_t index);
     void removeVertex(size_t index);
     void SetElevation(double elevation);
+    void setClose() const; 
+    void setOpen() const;
+
+    size_t numberOfVertex() const;
+    bool closed() const;
 };
