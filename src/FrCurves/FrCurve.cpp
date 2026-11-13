@@ -1,0 +1,2 @@
+#include "FrCurve.h"
+
