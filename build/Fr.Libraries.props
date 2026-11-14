@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemDefinitionGroup>
     <Link>
-      <AdditionalDependencies>FrMain.lib;FrEntities.lib;FrEditor.lib;FrMap.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FrMain.lib;FrEntities.lib;FrEditor.lib;FrMap.lib;FrCurves.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
 </Project>
