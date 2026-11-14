@@ -1,5 +1,6 @@
 #pragma once
 #include <FrEntity.h>
+
 #include <vector>
 
 class FrCurve : public FrEntity {
@@ -10,5 +11,17 @@ class FrCurve : public FrEntity {
   public:
     using NativeType = AcDbCurve;
 
-    std::vector<FrCurve> split();
+    double startParameter() const;
+    double endParameter() const;
+
+    double parameter(const AcGePoint3d& pt) const;
+    double parameter(double distance) const;
+
+    double distance(double parameter) const;
+    double length() const;
+
+    AcGePoint3d point(double parameter) const;
+    AcGePoint3d pointAtDistance(double distance) const;
+
+    AcGePoint3d closestPoint(const AcGePoint3d& pt) const;
 };
