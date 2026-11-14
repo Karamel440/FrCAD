@@ -22,6 +22,8 @@ class FrEntity : public FrObject {
   public:
     virtual ~FrEntity();
 
+    friend class Open;
+
     AcDbEntity* entity() noexcept { return ent_.get(); }
 
     AcDbEntity* entity() const noexcept { return ent_.get(); }
