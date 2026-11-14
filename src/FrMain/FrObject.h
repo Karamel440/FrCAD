@@ -5,12 +5,18 @@
 
 #include "FrExceptions.h"
 
+template <typename T>
+class Open;
+
 class FrObject {
 protected:
 	AcDbObjectId id_ = AcDbObjectId::kNull;
 
 public:
 	using NativeType = AcDbObject;
+
+	template <typename T>
+    friend class Open;
 
 	virtual ~FrObject() = default;
 
