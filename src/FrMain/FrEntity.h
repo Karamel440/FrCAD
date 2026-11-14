@@ -9,6 +9,9 @@
 #include "FrLayer.h"
 #include "FrObject.h"
 
+template <typename T>
+class Open;
+
 class FrEntity : public FrObject {
     std::unique_ptr<AcDbEntity> ent_;
 
@@ -22,6 +25,7 @@ class FrEntity : public FrObject {
   public:
     virtual ~FrEntity();
 
+    template <typename T>
     friend class Open;
 
     AcDbEntity* entity() noexcept { return ent_.get(); }
