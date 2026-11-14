@@ -9,7 +9,7 @@ class FrPolyline : public FrCurve {
     friend class FrRefDatabase;
     friend class FrObject;
 
-    FrPolyline(AcDbObjectId id) : FrCurve{id} {}
+    explicit FrPolyline(AcDbObjectId id) : FrCurve{id} {}
 
   public:
     FrPolyline(): FrCurve(std::make_unique<AcDbPolyline>()) {}
@@ -17,11 +17,15 @@ class FrPolyline : public FrCurve {
     using NativeType = AcDbPolyline;
 
     void addVertex(const AcGePoint3d& point,size_t index);
+    void addVertex(const AcGePoint3d& point);
     void removeVertex(size_t index);
-    void SetElevation(double elevation);
-    void setClose() const; 
-    void setOpen() const;
+    void setVertex(size_t index, const AcGePoint3d& point);
 
-    size_t numberOfVertex() const;
+    void setElevation(double elevation);
+    void setClose(); 
+    void setOpen();
+
+    AcGePoint3d vertex(size_t index) const;
+    size_t vertexCount() const;
     bool closed() const;
 };
