@@ -1,5 +1,7 @@
 #include "FrCircle.h"
 
+FrCircle::FrCircle(AcDbObjectId id) : FrCurve{id} {}
+
 FrCircle::FrCircle() : FrCircle{AcGePoint3d{0.0, 0.0, 0.0}, 1.0} {}
 
 FrCircle::FrCircle(const AcGePoint3d& center) : FrCircle{center, 1.0} {}
@@ -23,13 +25,13 @@ void FrCircle::setCenter(const AcGePoint3d& center) {
     FrCheckStatus(circle->setCenter(center), L"Не удалось установить центр");
 }
 
-double FrCircle::radius() const { 
+double FrCircle::radius() const {
     auto circle = open<>(*this, AcDb::kForRead);
 
     return circle->radius();
 }
 
-AcGePoint3d FrCircle::center() const { 
+AcGePoint3d FrCircle::center() const {
     auto circle = open<>(*this, AcDb::kForRead);
 
     return circle->center();

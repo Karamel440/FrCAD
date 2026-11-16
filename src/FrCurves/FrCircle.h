@@ -1,16 +1,18 @@
 #pragma once
-#include "FrCurve.h"
 #include <Open.h>
 
-class FrCircle: public FrCurve {
+#include "FrCurve.h"
+
+class FrCircle : public FrCurve {
     friend class FrRefDatabase;
     friend class FrObject;
-    template<typename T>
+    template <typename T>
     friend class Open;
 
+  protected:
     FrCircle(AcDbObjectId id);
 
-public:
+  public:
     using NativeType = AcDbCircle;
 
     FrCircle();
