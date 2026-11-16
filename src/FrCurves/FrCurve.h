@@ -17,6 +17,9 @@ class FrCurve : public FrEntity {
     double parameter(const AcGePoint3d& pt) const;
     double parameter(double distance) const;
 
+    AcGePoint3d perpendicular(double parameter, double distance) const;
+    AcGePoint3d perpendicular(const AcGePoint3d& pt, double distance) const;
+
     double distance(double parameter) const;
     double length() const;
 

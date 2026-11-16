@@ -40,6 +40,33 @@ double FrCurve::parameter(double distance) const {
 
 }
 
+AcGePoint3d FrCurve::perpendicular(double parameter, double distance) const {
+    auto curve = open(*this, AcDb::kForRead);
+
+    AcGePoint3d pt;
+
+    FrCheckStatus(curve->getPointAtParam(parameter, pt),
+                  L"Не удалось получить точку");
+
+    AcGeVector3d tangent;
+
+    FrCheckStatus(curve->getFirstDeriv(parameter, tangent),
+                  L"Не удалось получить касательную");
+
+    AcGeVector3d perpendicular{-tangent.y, tangent.x, 0.0};
+
+    perpendicular.normalize();
+
+    return pt + perpendicular * distance;
+}
+
+AcGePoint3d FrCurve::perpendicular(const AcGePoint3d& pt,
+                                   double distance) const {
+    return perpendicular(parameter(pt), distance);
+}
+
+
+
 double FrCurve::distance(double parameter) const {
     auto curve = open(*this, AcDb::kForRead);
     double dist;
