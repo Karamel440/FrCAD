@@ -15,12 +15,16 @@
     <ClCompile Include="FrPolyline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FrCircle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FrCurve.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FrPolyline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FrCircle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

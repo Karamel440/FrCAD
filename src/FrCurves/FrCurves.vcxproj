@@ -45,8 +45,10 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FrCircle.cpp" />
     <ClCompile Include="FrCurve.cpp" />
     <ClCompile Include="FrPolyline.cpp" />
+    <ClInclude Include="FrCircle.h" />
     <ClInclude Include="FrCurve.h" />
     <ClInclude Include="FrPolyline.h" />
   </ItemGroup>
