@@ -65,8 +65,6 @@ AcGePoint3d FrCurve::perpendicular(const AcGePoint3d& pt,
     return perpendicular(parameter(pt), distance);
 }
 
-
-
 double FrCurve::distance(double parameter) const {
     auto curve = open(*this, AcDb::kForRead);
     double dist;

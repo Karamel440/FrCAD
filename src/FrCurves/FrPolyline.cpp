@@ -5,6 +5,8 @@
 #include <dbobjptr.h>
 #include <dbobjptr2.h>
 
+#include <numbers>
+
 void FrPolyline::addVertex(const AcGePoint3d& point, size_t index) {
     auto line = open(*this, AcDb::kForWrite);
 
@@ -67,7 +69,7 @@ double FrPolyline::segmentAngle(size_t segmentIndex) const {
 
     AcGeVector3d direction = lineSeg.endPoint() - lineSeg.startPoint();
 
-    return std::atan2(direction.y, direction.x);
+    return std::atan2(direction.y, direction.x) * 180.0 / std::numbers::pi;
 }
 
 double FrPolyline::segmentLength(size_t segmentIndex) const {

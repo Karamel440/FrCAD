@@ -1,5 +1,6 @@
 #pragma once
 #include <aced.h>
+#include <string>
 
 class FrLayer {
 	AcDbObjectId id_;
