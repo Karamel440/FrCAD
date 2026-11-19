@@ -15,7 +15,9 @@
     <ClCompile Include="FrPolyline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FrCircle.cpp" />
+    <ClCompile Include="FrCircle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FrCurve.h">

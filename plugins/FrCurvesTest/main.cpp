@@ -1,32 +1,32 @@
-#include <FrPolyline.h>
-#include <FrSelection.h>
-#include <FrOutput.h>
-#include <FrText.h>
 #include "main.h"
 
+#include <FrOutput.h>
+#include <FrPolyline.h>
+#include <FrSelection.h>
+#include <FrText.h>
+
 void FrTestSegments() {
-    auto texts = FrSelect<FrText>();
-    auto polylines = FrSelect<FrPolyline>();
+    FrPolyline line;
 
-    if (texts.empty() || polylines.empty()) return;
+    AcGePoint3d pt1{0, 0, 0};
+    AcGePoint3d pt2{10, 10, 0};
 
-    auto& text = texts[0];
-    auto& pl = polylines[0];
+    line.addVertex(pt1);
+    line.addVertex(pt2);
 
-    auto pt = FrGetPoint(L"Выберите точку на полилинии:\n");
+    double par1 = 0.25;
+    double par2 = 0.75;
 
-    auto seg = pl.closestSegment(pt);
-    double angle = pl.segmentAngle(seg);
+    auto db = FrDbCurrent();
 
-    if (angle > 90.0) {
-        angle -= 180.0;
-    } else if (angle < -90.0) {
-        angle += 180.0;
+    std::vector<double> params{par1, par2};
+
+    db.append(line);
+
+    auto curves = line.split(params);
+
+
+    for (auto& curve : curves) {
+        db.append(curve);
     }
-
-    text.setRotation(angle);
-
-    auto pt2 = FrGetPoint(L"Выберите точку вставки текста:\n");
-
-    text.setPosition(pt2);
 }

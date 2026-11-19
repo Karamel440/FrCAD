@@ -89,6 +89,54 @@ double FrCurve::length() const {
     return length;
 }
 
+std::vector<FrCurve> FrCurve::split(const std::vector<double>& parameters) {
+    if (parameters.empty())
+        throw FrException{L"Не указаны параметры разделения кривой"};
+
+    AcGeDoubleArray params;
+
+    for (const auto param : parameters) {
+        params.append(param);
+    }
+
+    auto curve = open(*this, AcDb::kForWrite);
+
+    AcDbVoidPtrArray segments;
+    auto status = curve->getSplitCurves(params, segments);
+
+    struct Cleanup {
+        AcDbVoidPtrArray& segments;
+
+        ~Cleanup() {
+            for (int i = 0; i < segments.length(); ++i) {
+                delete static_cast<AcDbCurve*>(segments[i]);
+            }
+        }
+    };
+
+    Cleanup cleanup{segments};
+
+    FrCheckStatus(status, L"Не удалось разделить кривую");
+
+    std::vector<FrCurve> result;
+    result.reserve(segments.length());
+
+    for (int i = 0; i < segments.length(); ++i) {
+        auto* raw = static_cast<AcDbCurve*>(segments[i]);
+
+        std::unique_ptr<AcDbCurve> owned{raw};
+        segments[i] = nullptr;
+
+        result.push_back(FrCurve{std::move(owned)});
+    }
+
+    if (curve->database() != nullptr) {
+        curve->erase();
+    }
+
+    return result;
+}
+
 AcGePoint3d FrCurve::point(double parameter) const {
     auto curve = open(*this, AcDb::kForRead);
     AcGePoint3d pt;
