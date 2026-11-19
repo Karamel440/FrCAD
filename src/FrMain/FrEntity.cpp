@@ -186,3 +186,7 @@ FrBounds FrEntity::bounds() const {
 
 	return FrBounds{ ext };
 }
+
+bool FrEntity::isInDatabase() const { 
+	return !id_.isNull();
+}

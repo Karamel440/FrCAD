@@ -57,4 +57,6 @@ class FrEntity : public FrObject {
     std::wstring Linetype() const;
 
     FrBounds bounds() const;
+
+    bool isInDatabase() const;
 };
