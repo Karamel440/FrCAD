@@ -2,6 +2,7 @@
 
 #include <FrExceptions.h>
 #include <Open.h>
+#include <dbpl.h>
 
 #include <algorithm>
 #include <cmath>
@@ -165,6 +166,61 @@ std::vector<FrCurve> FrCurve::split(const std::vector<double>& parameters) {
     if (isInDatabase())
         FrCheckStatus(curve->erase(), L"Не удалось удалить исходную кривую");
     return result;
+}
+
+bool FrCurve::contains(const AcGePoint3d& point) const {
+    constexpr double tolerance = 1e-6;
+
+    auto curve = open(*this, AcDb::kForRead);
+    auto* poly = AcDbPolyline::cast(curve.operator->());
+
+    if (!poly || !poly->isClosed() || poly->numVerts() < 3)
+        throw FrException{L"Кривая не является замкнутой полилинией"};
+
+    if (poly->hasBulges())
+        throw FrException{L"Граница не должна содержать дуги"};
+
+    bool inside = false;
+    const int count = poly->numVerts();
+
+    for (int i = 0; i < count; ++i) {
+        AcGePoint3d a, b;
+
+       FrCheckStatus(poly->getPointAt(i, a),
+                      L"Не удалось получить вершину полилинии");
+
+        FrCheckStatus(poly->getPointAt((i + 1) % count, b),
+                      L"Не удалось получить вершину полилинии");
+
+        const double dx = b.x - a.x;
+        const double dy = b.y - a.y;
+        const double len2 = dx * dx + dy * dy;
+
+        // Проверка принадлежности точки отрезку
+        if (len2 > 0.0) {
+            const double t = std::clamp(
+                ((point.x - a.x) * dx + (point.y - a.y) * dy) / len2, 0.0, 1.0);
+
+            const double x = a.x + t * dx;
+            const double y = a.y + t * dy;
+
+            const double dist2 =
+                (point.x - x) * (point.x - x) + (point.y - y) * (point.y - y);
+
+            if (dist2 <= tolerance * tolerance) return true;
+        }
+
+        // Ray Casting
+        if ((a.y > point.y) != (b.y > point.y)) {
+            const double t = (point.y - a.y) / (b.y - a.y);
+
+            const double x = a.x + t * dx;
+
+            if (x > point.x) inside = !inside;
+        }
+    }
+
+    return inside;
 }
 
 AcGePoint3d FrCurve::point(double parameter) const {
