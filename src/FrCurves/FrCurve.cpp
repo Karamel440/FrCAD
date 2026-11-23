@@ -3,6 +3,10 @@
 #include <FrExceptions.h>
 #include <Open.h>
 
+#include <algorithm>
+#include <cmath>
+#include <vector>
+
 double FrCurve::startParameter() const {
     auto curve = open(*this, AcDb::kForRead);
     double param;
@@ -93,9 +97,32 @@ std::vector<FrCurve> FrCurve::split(const std::vector<double>& parameters) {
     if (parameters.empty())
         throw FrException{L"Не указаны параметры разделения кривой"};
 
-    AcGeDoubleArray params;
+    const double start = startParameter();
+    const double end = endParameter();
+    std::vector<double> sortedParameters = parameters;
+    for (double param : sortedParameters) {
+        if (!std::isfinite(param) || param < start || param > end)
+            throw FrException{L"Параметр разделения вне диапазона кривой",
+                              Acad::eInvalidInput};
+    }
+    std::sort(sortedParameters.begin(), sortedParameters.end());
+    sortedParameters.erase(
+        std::unique(sortedParameters.begin(), sortedParameters.end()),
+        sortedParameters.end());
 
-    for (const auto param : parameters) {
+    const bool closed = open(*this, AcDb::kForRead)->isClosed();
+    if (!closed) {
+        constexpr double endpointTolerance = 1e-6;
+        const double totalLength = length();
+        std::erase_if(sortedParameters, [&](double param) {
+            const double along = distance(param);
+            return along <= endpointTolerance || totalLength - along <= endpointTolerance;
+        });
+        if (sortedParameters.empty()) return {};
+    }
+
+    AcGeDoubleArray params;
+    for (double param : sortedParameters) {
         params.append(param);
     }
 
@@ -127,13 +154,16 @@ std::vector<FrCurve> FrCurve::split(const std::vector<double>& parameters) {
         std::unique_ptr<AcDbCurve> owned{raw};
         segments[i] = nullptr;
 
-        result.push_back(FrCurve{std::move(owned)});
+        FrCurve piece{std::move(owned)};
+        if (piece.length() > 0.0) result.push_back(std::move(piece));
     }
 
-    if (curve->database() != nullptr) {
-        curve->erase();
-    }
-
+    if (result.empty())
+        throw FrException{L"Разрезание не дало фрагментов ненулевой длины",
+                          Acad::eDegenerateGeometry};
+    if (!closed && result.size() == 1) return {};
+    if (isInDatabase())
+        FrCheckStatus(curve->erase(), L"Не удалось удалить исходную кривую");
     return result;
 }
 

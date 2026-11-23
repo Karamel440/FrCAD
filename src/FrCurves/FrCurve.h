@@ -24,12 +24,10 @@ class FrCurve : public FrEntity {
     double length() const;
 
     /// <summary>
-    /// –азрезает исходную кривую на набор кривых.
+    /// –азрезает исходную кривую на набор кривых по параметрам.
     /// </summary>
     /// <returns>Ќабор кривых из исходной</returns>
-    std::vector<FrCurve> split();
     std::vector<FrCurve> split(const std::vector<double>& parameters);
-    std::vector<FrCurve> split(std::vector<AcGePoint3d> points);
 
     AcGePoint3d point(double parameter) const;
     AcGePoint3d pointAtDistance(double distance) const;
