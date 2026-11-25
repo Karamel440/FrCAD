@@ -27,7 +27,7 @@ class FrCurve : public FrEntity {
     /// –азрезает исходную кривую на набор кривых по параметрам.
     /// </summary>
     /// <returns>Ќабор кривых из исходной</returns>
-    std::vector<FrCurve> split(const std::vector<double>& parameters);
+    std::vector<FrCurve> split(std::vector<double>& parameters);
 
     bool contains(const AcGePoint3d& point) const;
 

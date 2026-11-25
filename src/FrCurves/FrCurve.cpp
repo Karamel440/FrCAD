@@ -94,77 +94,57 @@ double FrCurve::length() const {
     return length;
 }
 
-std::vector<FrCurve> FrCurve::split(const std::vector<double>& parameters) {
+std::vector<FrCurve> FrCurve::split(std::vector<double>& parameters) {
     if (parameters.empty())
-        throw FrException{L"Не указаны параметры разделения кривой"};
+        throw FrException{L"Переданы некорректные параметры"};
 
-    const double start = startParameter();
-    const double end = endParameter();
-    std::vector<double> sortedParameters = parameters;
-    for (double param : sortedParameters) {
-        if (!std::isfinite(param) || param < start || param > end)
-            throw FrException{L"Параметр разделения вне диапазона кривой",
-                              Acad::eInvalidInput};
-    }
-    std::sort(sortedParameters.begin(), sortedParameters.end());
-    sortedParameters.erase(
-        std::unique(sortedParameters.begin(), sortedParameters.end()),
-        sortedParameters.end());
+    const auto start = startParameter();
+    const auto end = endParameter();
+    constexpr auto tolerance = 1e-8;
+    const auto closed = open<>(*this, AcDb::kForRead)->isClosed();
 
-    const bool closed = open(*this, AcDb::kForRead)->isClosed();
-    if (!closed) {
-        constexpr double endpointTolerance = 1e-6;
-        const double totalLength = length();
-        std::erase_if(sortedParameters, [&](double param) {
-            const double along = distance(param);
-            return along <= endpointTolerance || totalLength - along <= endpointTolerance;
-        });
-        if (sortedParameters.empty()) return {};
-    }
+    std::sort(parameters.begin(), parameters.end());
 
     AcGeDoubleArray params;
-    for (double param : sortedParameters) {
+
+    for (auto& param : parameters) {
+        if (!closed && (param <= start + tolerance || param >= end - tolerance))
+            continue;
+
         params.append(param);
     }
 
-    auto curve = open(*this, AcDb::kForWrite);
-
-    AcDbVoidPtrArray segments;
-    auto status = curve->getSplitCurves(params, segments);
-
-    struct Cleanup {
-        AcDbVoidPtrArray& segments;
-
-        ~Cleanup() {
-            for (int i = 0; i < segments.length(); ++i) {
-                delete static_cast<AcDbCurve*>(segments[i]);
-            }
-        }
-    };
-
-    Cleanup cleanup{segments};
-
-    FrCheckStatus(status, L"Не удалось разделить кривую");
+    AcGeVoidPointerArray curves;
 
     std::vector<FrCurve> result;
-    result.reserve(segments.length());
 
-    for (int i = 0; i < segments.length(); ++i) {
-        auto* raw = static_cast<AcDbCurve*>(segments[i]);
+    if (params.isEmpty()) return {};
 
-        std::unique_ptr<AcDbCurve> owned{raw};
-        segments[i] = nullptr;
+    try {
+        auto curve = open<>(*this, AcDb::kForWrite);
 
-        FrCurve piece{std::move(owned)};
-        if (piece.length() > 0.0) result.push_back(std::move(piece));
+        FrCheckStatus(curve->getSplitCurves(params, curves),
+                      L"Не удалось разделить кривую");
+
+        result.reserve(curves.length());
+
+        for (int i{}; i < curves.length(); i++) {
+            std::unique_ptr<AcDbCurve> ptr{static_cast<AcDbCurve*>(curves[i])};
+            curves[i] = nullptr;
+
+            FrCurve piece{std::move(ptr)};
+            if (piece.length() > 0.0) result.push_back(std::move(piece));
+        }
+    } catch (...) {
+        for (int i{}; i < curves.length(); i++) {
+            delete static_cast<AcDbCurve*>(curves[i]);
+        }
+        throw;
     }
+    
 
-    if (result.empty())
-        throw FrException{L"Разрезание не дало фрагментов ненулевой длины",
-                          Acad::eDegenerateGeometry};
-    if (!closed && result.size() == 1) return {};
-    if (isInDatabase())
-        FrCheckStatus(curve->erase(), L"Не удалось удалить исходную кривую");
+    if (!result.empty() && isInDatabase()) erase();
+
     return result;
 }
 
